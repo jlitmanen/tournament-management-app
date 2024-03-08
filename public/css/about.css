@@ -1,0 +1,38 @@
+p {
+    white-space: pre-wrap;
+    color: #F5D061;
+}
+
+.details {
+    overflow: hidden;
+    border-bottom: 1px solid #CFD8DC;
+    transition: height 300ms ease-in-out;
+}
+.details:last-child {
+    border-bottom: 0;
+}
+
+.details_summary, .details_content {
+    padding: 14px;
+}
+
+.details_summary {
+    color: #F5D061;
+    position: relative;
+    list-style: none;
+    padding-left: 24px*2;
+    outline: 0;
+    cursor: pointer;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    transition: color 300ms ease-in-out;
+}
+
+.details_summary::-webkit-details-marker {
+    display: none;
+}
+
+.details_content {
+    padding-top: 0;
+    padding-left: 24px*2; 
+}

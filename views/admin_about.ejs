@@ -1,0 +1,27 @@
+<div>
+    <div>
+        <select id="selest" onchange="myFunction()">
+            <option value="" disabled selected>Valitse...</option>
+            <% content?.forEach(function(c) { %>
+                <option value='<%= c.id %>|<%= c.title %>|<%= c.text %>''><%= c.title %></option>
+            <% }) %>
+        </select>
+    </div>
+    <form id="about" action="/admin/about" method="post">
+        <input type="hidden" name="id" id="id" />
+        <textarea name="title" id="title" class="title" form="about" placeholder="Add title here..."></textarea>
+        <textarea name="text" id="text" class="text" form="about" placeholder="Add content here..."></textarea>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="submit" value="Save"/>
+    </form>   
+</div>
+<script>
+    function myFunction() {
+        var full = document.getElementById("selest").value;
+        const words = full.split('|');
+        console.log(words[0]);
+        document.getElementById("id").value = words[0];
+        document.getElementById("title").innerHTML = words[1];
+        document.getElementById("text").innerHTML = words[2];
+    }
+</script>

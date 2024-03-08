@@ -1,0 +1,21 @@
+<table class="ranking_table" id="taapeli">
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Group</th>
+        <th>Points</th>
+        <th>Matches</th>
+    </tr>
+    <% players?.forEach(function(c) { %>
+        <tbody>
+            <tr key=<%= c.id %> id="tractor">
+                <td> <%= c.name %> </td>
+                <td> <%= c.group %> </td>
+                <td> <%= c.points %> </td>
+                <td> <%= c.matches %> </td>
+
+            </tr>
+        </tbody>
+    <% }) %>
+</table>
+

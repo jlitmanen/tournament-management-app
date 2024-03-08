@@ -1,0 +1,32 @@
+<div id="Player">
+    <select id="selest" onchange="myFunction()">
+        <option value="" disabled selected>Valitse...</option>
+        <% players?.forEach(function(c) { %>
+            <option value='<%= c.id %>|<%= c.name %>|<%= c.group %>|<%= c.points %>''><%= c.name %></option>
+        <% }) %>
+    </select>
+    <form action="/admin/ranking" method="post">
+        <input type="hidden" name="id" id="id" />
+        <label for="name">Name:  </label>
+        <input type="text" name="name" id="name"/>
+        <label for="group">Group: </label>
+        <input type="number" name="group" id="small"/>
+        <label for="points">Points:  </label>
+        <input type="number" name="points" id="small"/>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <input type="submit" value="Submit"/>
+    </form>
+</div>
+
+<script>
+    function myFunction() {
+        var full = document.getElementById("selest").value;
+        const words = full.split('|');
+        console.log(words[0]);
+        document.getElementById("id").value = words[0];
+        document.getElementById("name").value = words[1];
+        document.getElementById("group").value = words[2];
+        document.getElementById("points").value = words[3];
+    }
+</script>

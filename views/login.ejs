@@ -1,0 +1,29 @@
+<div>
+	<form action="/login/password" method="post">
+		<label for="email">Username</label>
+		<input
+			id="username" 
+			name="username" 
+			type="text" 
+			autocomplete="username" required autofocus
+			placeholder="Username"
+		/>
+		<label for="password">Password</label>
+		<input
+			name="password" 
+			type="password" 
+			autocomplete="current-password" required
+			placeholder="Password"
+		/>
+		<% if (hasMessages) { %>
+			<section class="messages">
+				<% messages.forEach(function(message) { %>
+				<p><%= message %></p>
+				<% }); %>
+			</section>
+			<% } %>
+		<input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+		<input type="submit" value="Log in" />
+		
+	</form>
+</div>

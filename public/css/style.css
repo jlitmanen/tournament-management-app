@@ -1,0 +1,77 @@
+/*
+dark: 2A363B
+red: CF4647
+yellow: F5D061
+white: F8F6F6
+*/
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700');
+body {
+  font-family: 'source sans pro', sans-serif;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #2A363B;
+  color: #310B0B;
+  color-scheme: light dark;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+main {
+  box-sizing: border-box;
+  margin: 5%;
+  width: 90%;
+  flex-direction: column;
+}
+
+.info {
+  font-size: 10px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.logout {
+  background-color: #04AA6D; /* Green */
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  float: right;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  border-radius: 5%;
+  height: auto;
+}
+
+.header {
+  padding: 10px;
+  text-align: center;
+  background: #F5D061;
+  color: #2A363B;
+  font-size: 30px;
+  opacity: 0.8;
+}
+
+form {
+  color: #F5D061;
+  margin: 0 auto; 
+  width:50%;
+  padding: auto;
+}
+input {
+  width: 100%;
+  margin-bottom: 5%;
+  padding: 2%;
+  font-size: 1em;
+  background: #F8F6F6;
+}

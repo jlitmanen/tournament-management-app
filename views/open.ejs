@@ -1,0 +1,32 @@
+<form>
+	<input type="button" value="Go back!" onclick="history.back()" class="backbutton">
+</form>
+	<h1><%= open.name %> <%= open.year %></h1>
+	<% if (matches.length > 0) { %>
+<div class="theme theme-light" id="bracket">
+	<div class="bracket  disable-image">
+		<div class="column one">
+			<% for (i=0; i < 4; i++) { %>
+				<% var m = matches[i]; %>
+				<%- include('./partials/match.ejs', {match: m}) %>	
+			<% }%>
+		</div>
+
+		<div class="column two">
+			<% for (i=4; i < 6; i++) { %>
+				<% var m = matches[i] %>
+				<%- include('./partials/match.ejs', {match: m}) %>	
+			<% }%>
+		</div>
+
+		<div class="column three">
+			<% var m = matches[6] %>
+			<%- include('./partials/match.ejs', {match: m}) %>		
+		</div>
+	</div>
+	<% } else { %>
+	<div>
+		<p>The tournament has not started</p>
+	</div>
+	<% } %>
+</div>

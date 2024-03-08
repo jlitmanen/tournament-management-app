@@ -1,0 +1,12 @@
+<div>
+    <% content?.forEach(function(c) { %>
+        <details>
+            <summary class="details_summary">
+                <%= c.title %>
+            </summary>
+            <div class="details_content">
+                <p><%= c.text %></p>
+            </div>
+        </details>  
+    <% }) %>
+</div>

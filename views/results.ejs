@@ -1,0 +1,57 @@
+<input class="filter" type="text" id="yearInput" onkeyup="filterYear()" placeholder="Search for date.." title="Type in a number">
+<input class="filter" type="text" id="nameInput" onkeyup="filterName()" placeholder="Search for names.." title="Type in a name">
+
+<table id="myTable">
+  <tr>
+        <th>Date</th>
+        <th>Match</th>
+        <th>Result</th>
+    </tr>
+    <% results?.forEach(function(c) { %>
+        <tbody>
+            <tr>
+                <td> <%= c.date %> </td>
+                <td> <%= c.player1 %> - <%= c.player2 %> </td>
+                <td> <%= c.wins1 %> - <%= c.wins2 %> (<%= c.result %>) </td>
+            </tr>
+        </tbody>
+    <% }) %>
+</table>
+<script>
+  function filterName() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("nameInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }       
+    }
+  }
+  function filterYear() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("yearInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }       
+    }
+  }
+</script>

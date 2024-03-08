@@ -1,0 +1,27 @@
+<form action="/open" method="post">
+	<input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+	<select id="selest" name="open" onchange="this.form.submit()" >
+		<option value="" disabled selected>Valitse...</option>
+		<optgroup label="2022">
+			<% opens?.forEach(function(open) { %>
+				<% if (open.year === 2022) { %>
+					<option value='<%= open.id %>''><%= open.name %></option>
+				<% } %>			
+			<% }) %>
+		</optgroup>
+		<optgroup label="2023">
+			<% opens?.forEach(function(open) { %>
+				<% if (open.year === 2023) { %>
+					<option value='<%= open.id %>''><%= open.name %></option>
+				<% } %>			
+			<% }) %>
+		</optgroup>
+		<optgroup label="2024">
+			<% opens?.forEach(function(open) { %>
+				<% if (open.year === 2024) { %>
+					<option value='<%= open.id %>''><%= open.name %></option>
+				<% } %>
+			<% }) %>
+		</optgroup>
+	</select>
+</form>
