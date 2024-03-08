@@ -1,8 +1,8 @@
 {
-  "name": "todos-express-password",
-  "version": "0.0.0",
+  "name": "ktp_node_ejs",
+  "version": "0.0.1",
   "private": true,
-  "description": "Todo app using Express and Passport for sign in with username and password.",
+  "description": "",
   "keywords": [
     "example",
     "express",
@@ -10,21 +10,7 @@
     "sqlite"
   ],
   "author": {
-    "name": "Jared Hanson",
-    "email": "jaredhanson@gmail.com",
-    "url": "https://www.jaredhanson.me/"
-  },
-  "homepage": "https://github.com/passport/todos-express-password",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/passport/todos-express-password.git"
-  },
-  "bugs": {
-    "url": "https://github.com/passport/todos-express-password/issues"
-  },
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/jaredhanson"
+    "name": "Joonas Litmanen"
   },
   "license": "Unlicense",
   "scripts": {
