@@ -124,7 +124,7 @@ function insertMatch (req, res, next) {
 };
 
 function updatePoints(m, winner, loser) {
-    if(m.opens === null) {
+    if(m.opens === null || m.opens === '') {
         var winnerGroup = m.p1 === winner ? m.p1group : m.p2group;
         var loserGroup = m.p1 === winner ? m.p2group : m.p1group;
         var winnerWins = m.p1 === winner ? m.wins1 : m.wins2;
