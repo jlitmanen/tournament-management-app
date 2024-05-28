@@ -1,4 +1,39 @@
-<div>
-    
+<div style="width: 20em; background: #F5D061; position: fixed; z-index: 1;">
+  <ul class="nav flex-column" id="myTab">
+    <li class="nav-item">
+      <a class="nav-item text-dark" href="#about">About</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-item text-dark" href="#ranking">Ranking</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-item text-dark" href="#results">Results</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-item text-dark" href="#tournaments">Opens</a>
+    </li>
+  </ul>
 </div>
-
+<div style="margin-left: 25em;">
+  <div class="tab-content" id="v-pills-tabContent">
+    <div class="tab-pane fade" id="about" role="tabpanel">
+        <%- include('./admin_partials/admin_about.ejs', {content: content}) %>	
+    </div>
+    <div class="tab-pane fade" id="ranking" role="tabpanel">
+        <%- include('./admin_partials/admin_ranking.ejs', {players: players}) %>	
+    </div>
+    <div class="tab-pane fade" id="results" role="tabpanel">
+        <%- include('./admin_partials/admin_results.ejs', {results: results, players: players, opens: opens}) %>	
+    </div>
+    <div class="tab-pane fade" id="opens" role="tabpanel">
+        <%- include('./admin_partials/admin_opens.ejs', {opens: opens}) %>	
+    </div>
+  </div>
+</div>
+  
+  <script>
+    $('#myTab a').on('click', function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
+  </script>

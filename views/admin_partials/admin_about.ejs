@@ -1,6 +1,6 @@
-<div>
+<div class="form-group">
     <div>
-        <select id="selest" onchange="myFunction()">
+        <select class="custom-select mr-sm-2" id="selest" onchange="myFunction()">
             <option value="" disabled selected>Valitse...</option>
             <% content?.forEach(function(c) { %>
                 <option value='<%= c.id %>|<%= c.title %>|<%= c.text %>''><%= c.title %></option>
@@ -13,7 +13,7 @@
         <textarea name="text" id="text" class="text" form="about" placeholder="Add content here..."></textarea>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <input type="submit" value="Save"/>
-    </form>   
+    </form>
 </div>
 <script>
     function myFunction() {

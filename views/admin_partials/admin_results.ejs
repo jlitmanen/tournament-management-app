@@ -1,0 +1,132 @@
+<div>
+    <div>
+        <select class="custom-select my-1 mr-sm-2" style="margin: 0 0 0 25%; width:50%; padding: auto;" id="selest" onchange="myFunction()">
+            <%
+            getPlayerName = function(id) {
+                let player = players.find((player) => player.id === id);
+                return player.name;
+            }
+            formatDate = function(d) {
+                var datestring = d.substring(8, 10) + "." + d.substring(5, 7) + "." + d.substring(0, 4)
+                return datestring;
+            }
+            %>
+            <option value="" disabled selected>Valitse...</option>
+            <optgroup label="Unreported">
+                <% results?.forEach(function(c) { %>
+                    <% if(c.reported === false && c.openId === 'NULL') { %>
+                        <option value='<%= c.id %>|<%= c.openId %>|<%= c.withdraw %>|<%= c.date %>|<%= c.home %>|<%= c.away %>|<%= c.homeWins %>|<%= c.awayWins %>|<%= c.result %>|<%= c.played %>|<%= c.reported %>'>
+                            <%= formatDate(c.date) %>: <%= getPlayerName(c.home) %> - <%= getPlayerName(c.away) %>
+                        </option>
+                    <% } %>
+                <% }) %>
+            </optgroup>
+            <optgroup label="Reported">
+                <% results?.forEach(function(c) { %>
+                    <% if(c.reported === true && c.openId === 'NULL') { %>
+                        <option value='<%= c.id %>|<%= c.openId %>|<%= c.withdraw %>|<%= c.date %>|<%= c.home %>|<%= c.away %>|<%= c.homeWins %>|<%= c.awayWins %>|<%= c.result %>|<%= c.played %>|<%= c.reported %>'>
+                            <%= formatDate(c.date) %>: <%= getPlayerName(c.home) %> - <%= getPlayerName(c.away) %>
+                        </option>
+                    <% } %>
+                <% }) %>
+            </optgroup>
+        </select>
+        <form action="/admin/results" method="post">
+            <input type="hidden" name="id" id="id" />
+            <label for="opens">Valitse turnaus:  </label>
+            <select class="custom-select my-1 mr-sm-2" name="opens" id="opens">
+                <option value="" disabled="disabled" selected="selected">Valitse:</option>
+                <% opens?.forEach(function(c) { %>
+                    <option value=
+                    '<%= c.id %>' >
+                        <%= c.name %>
+                    </option>
+                <% }) %>
+            </select>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="withdraw" name="withdraw" />
+                    <label class="form-check-label" for="withdraw">Luovutus</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="played" name="played" />
+                    <label class="form-check-label" for="played">Pelattu</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="reported" name="reported" />
+                    <label class="form-check-label" for="reported">Raportoitu</label>
+                </div>
+            </div>
+            <label for="game_date">Pelipäivä: </label>
+            <input type="date" id="game_date" name="game_date"/>
+            <div class="home">
+                <label for="home">Koti:  </label>
+                <select class="custom-select my-1 mr-sm-2"  name="home" id="home" onchange="setGroup()">
+                    <option value="" disabled="disabled" selected="selected">Valitse koti: </option>
+                    <% players?.forEach(function(c) { %>
+                        <option value='<%= c.id %>' group="<%= c.group %>">
+                            <%= c.name %>
+                        </option>
+                    <% }) %>
+                </select>
+                <label for="homeWins">Pelit (Koti):  </label>
+                <input type="number" id="homeWins" name="homeWins" max="2"/>
+            </div>
+            <div class="away">
+                <label for="away">Vieras:  </label>
+                <select class="custom-select my-1 mr-sm-2"  name="away" id="away"  onchange="setGroup()">
+                    <option value="" disabled="disabled" selected="selected">Valitse koti: </option>
+                    <% players?.forEach(function(c) { %>
+                        <option value='<%= c.id %>' group="<%= c.group %>">
+                            <%= c.name %>
+                        </option>
+                    <% }) %>
+                </select>
+                <label for="awayWins">Pelit (Vieras):  </label>
+                <input type="number" id="awayWins" name="awayWins" max="2"/>
+            </div>
+            <label for="result">Lisätiedot: </label>
+            <textarea class="form-control" id="result" name="result" rows="5"> </textarea>
+            <input type="hidden" name="homegroup" id="homegroup" />
+            <input type="hidden" name="awaygroup" id="awaygroup" />
+
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <input type="submit" value="Submit"/>
+        </form>
+    </div>
+</div>
+
+<script>
+    function myFunction() {
+        var full = document.getElementById("selest").value;
+        const words = full.split('|');
+ 
+        document.getElementById("id").value = words[0].trim();
+        document.getElementById("opens").value = words[1].trim();
+
+        document.getElementById("withdraw").checked = words[2].trim() === 'true' ? true : false;
+        document.getElementById("game_date").value = words[3].trim().substring(0, 10);
+
+        document.getElementById("home").value = words[4].trim();
+        document.getElementById("away").value = words[5].trim();
+
+        document.getElementById("homeWins").value = words[6].trim();
+        document.getElementById("awayWins").value = words[7].trim();
+
+        document.getElementById("result").innerHTML = words[8].trim();
+        document.getElementById("played").checked = words[9].trim() === 'true' ? true : false;
+        document.getElementById("reported").checked = words[10].trim() === 'true' ? true : false;
+        setGroup();
+    }
+
+    function setGroup() {
+        var e = document.getElementById("home");
+        var g1 = e.options[e.selectedIndex].getAttribute("group");
+
+        var e2 = document.getElementById("away");
+        var g2 = e2.options[e2.selectedIndex].getAttribute("group");
+
+        document.getElementById("homegroup").value = g1;
+        document.getElementById("awaygroup").value = g2;
+    }
+</script>

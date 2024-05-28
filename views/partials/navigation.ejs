@@ -1,12 +1,17 @@
-<div>
-    <nav>
-        <ul class="menuItems">
-            <li><a href="/">Home</a></li>
-            <li><a href="/ranking">Ranking</a></li>
-            <li><a href="/results">Matches</a></li>
-            <li><a href="/opens">Opens</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/login">Login</a></li> 
-        </ul>
-    </nav>
+<div style="position: fixed; top: 0; left: 0; background: #F5D061; color: #2A363B; width: 100%; height: 5em;">
+  <nav class="navbar sticky-top navbar-collapse">
+    <ul class="menuItems nav justify-content-center">
+        <li><a class="text-dark" href="/">Home</a></li>
+        <li><a class="nav-item text-dark" href="/ranking">Ranking</a></li>
+        <li><a class="nav-item text-dark" href="/results">Matches</a></li>
+        <li><a class="nav-item text-dark" href="/open">Opens</a></li>
+        <li><a class="nav-item text-dark" href="/about">About</a></li>
+        <% if(!isAuthenticated ) { %>
+          <li><a class="nav-item text-dark" href="/login">Login</a></li>
+        <% } else { %>
+          <li><a class="nav-item text-dark" href="/admin">Admin</a></li>
+          <li><a class="nav-item text-dark" href="/logout">Logout</a></li>
+        <% } %>
+    </ul>
+  </nav>
 </div>

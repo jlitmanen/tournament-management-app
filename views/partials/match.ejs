@@ -1,14 +1,14 @@
-<% winner =  match.wins1 > match.wins2 ? 'winner-top' : 'winner-bottom'%>
+<% winner =  match.homeWins > match.awayWins ? 'winner-top' : 'winner-bottom'%>
 <div class="match <%= winner %>">
     <div class="match-top team">
         <span class="image"></span>
-        <span class="name"><%= match.player1 %></span>
-        <span class="score"><%= match.wins1 %></span>
+        <span class="name"><%= match.home %></span>
+        <span class="score"><%= match.homeWins %></span>
     </div>
     <div class="match-bottom team">
         <span class="image"></span>
-        <span class="name"><%= match.player2 %></span>
-        <span class="score"><%= match.wins2 %></span>
+        <span class="name"><%= match.away %></span>
+        <span class="score"><%= match.awayWins %></span>
     </div>
     <div class="match-lines">
         <div class="line one"></div>

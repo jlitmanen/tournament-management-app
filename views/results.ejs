@@ -1,6 +1,38 @@
-<input class="filter" type="text" id="yearInput" onkeyup="filterYear()" placeholder="Search for date.." title="Type in a number">
-<input class="filter" type="text" id="nameInput" onkeyup="filterName()" placeholder="Search for names.." title="Type in a name">
+<style>  
+  .openbtn {
+    cursor: pointer;
+    color: white;
+    border: none;
+  }
+  
+  .openbtn:hover {
+    background-color: #444;
+  }
+  
+  /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+  @media screen and (max-height: 450px) {
+    .sidebar {padding-top: 15px;}
+    .sidebar a {font-size: 18px;}
+  }
+</style>
+<div id="main">
+<button class="openbtn" onclick="toggle()">☰ Search</button>
+<div id="mySidebar" style="display: none;">
+  <input 
+        class="form-control mr-sm-2 filter" type="search" placeholder="Search for date" 
+        id="yearInput" onkeyup="filterYear()" placeholder="Search for date.."  aria-label="Search for date">
 
+  <input 
+        class="form-control mr-sm-2 filter" type="search" placeholder="Search for name" 
+        id="nameInput" onkeyup="filterName()" placeholder="Search for date.."  aria-label="Search for date">
+
+  <%
+  formatDate = function(d) {
+      var datestring = d.substring(8, 10) + "." + d.substring(5, 7) + "." + d.substring(0, 4)
+      return datestring;
+  }
+  %>
+</div>
 <table id="myTable">
   <tr>
         <th>Date</th>
@@ -10,13 +42,14 @@
     <% results?.forEach(function(c) { %>
         <tbody>
             <tr>
-                <td> <%= c.date %> </td>
-                <td> <%= c.player1 %> - <%= c.player2 %> </td>
-                <td> <%= c.wins1 %> - <%= c.wins2 %> (<%= c.result %>) </td>
+                <td> <%- formatDate(c.date) %> </td>
+                <td> <%- c.home %> - <%- c.away %> </td>
+                <td> <%- c.result %> </td>
             </tr>
         </tbody>
     <% }) %>
 </table>
+</div>
 <script>
   function filterName() {
     var input, filter, table, tr, td, i, txtValue;
@@ -52,6 +85,18 @@
           tr[i].style.display = "none";
         }
       }       
+    }
+  }
+  function toggle() {
+
+    var ele = document.getElementById("mySidebar");
+
+    if (ele.style.display == "block") {
+
+        ele.style.display = "none";
+    }
+    else {
+        ele.style.display = "block";
     }
   }
 </script>

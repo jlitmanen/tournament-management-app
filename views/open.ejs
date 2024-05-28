@@ -1,32 +1,36 @@
-<form>
-	<input type="button" value="Go back!" onclick="history.back()" class="backbutton">
-</form>
-	<h1><%= open.name %> <%= open.year %></h1>
-	<% if (matches.length > 0) { %>
+<%- include('./partials/openSelector.ejs', {opens: opens}) %>	
+<% if (openMatches?.items.length > 0) { %>
 <div class="theme theme-light" id="bracket">
+	<h1><%- open.name %> <%- open.year %></h1>
 	<div class="bracket  disable-image">
 		<div class="column one">
 			<% for (i=0; i < 4; i++) { %>
-				<% var m = matches[i]; %>
+				<% var m = openMatches.items[i]; %>
 				<%- include('./partials/match.ejs', {match: m}) %>	
 			<% }%>
 		</div>
 
 		<div class="column two">
 			<% for (i=4; i < 6; i++) { %>
-				<% var m = matches[i] %>
+				<% var m = openMatches.items[i] %>
 				<%- include('./partials/match.ejs', {match: m}) %>	
 			<% }%>
 		</div>
 
 		<div class="column three">
-			<% var m = matches[6] %>
+			<% var m = openMatches.items[6] %>
 			<%- include('./partials/match.ejs', {match: m}) %>		
 		</div>
 	</div>
 	<% } else { %>
-	<div>
-		<p>The tournament has not started</p>
-	</div>
+		<% if(open == null) { %>
+		<div class="alert alert-warning" role="alert">
+			Select tournament!
+		</div>
+		<% } else { %>
+			<div class="alert alert-warning" role="alert">
+				The tournament has not started
+			</div>
+		<% } %>		
 	<% } %>
 </div>

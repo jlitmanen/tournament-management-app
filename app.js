@@ -52,6 +52,11 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use(function (req, res, next) {
+  res.locals.isAuthenticated = req.isAuthenticated();
+  next();
+});
+
 app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/admin', adminRouter);

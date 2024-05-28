@@ -1,0 +1,89 @@
+/*
+dark: 2A363B
+red: CF4647
+yellow: F5D061
+white: F8F6F6
+*/
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700');
+body {
+  font-family: 'source sans pro', sans-serif;
+  background-color: #2A363B;
+  color: #310B0B;
+  color-scheme: light dark;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+main {
+  box-sizing: border-box;
+  margin-left: 25%;
+  margin-top: 15%;
+  width: 50%;
+  flex-direction: column;
+}
+
+.info {
+  font-size: 10px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  border-radius: 5%;
+  height: auto;
+}
+
+.header {
+  padding: 10px;
+  text-align: center;
+  background: #F5D061;
+  color: #2A363B;
+  font-size: 30px;
+  opacity: 0.8;
+}
+
+nav .menuItems {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+nav .menuItems li {
+  margin: 10px;
+}
+nav .menuItems li a {
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 400;
+  transition: all 0.5s ease-in-out;
+  position: relative;
+  text-transform: uppercase;
+}
+nav .menuItems li a::before {
+  content: attr(data-item);
+  transition: 0.5s;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 0;
+  overflow: hidden;
+}
+nav .menuItems li a:hover::before {
+  width: 100%;
+  transition: all 0.5s ease-in-out;
+}
+
+nav .menuItems > li:last-child
+{
+  float:right;
+}

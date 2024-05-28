@@ -10,9 +10,9 @@
         <label for="name">Name:  </label>
         <input type="text" name="name" id="name"/>
         <label for="group">Group: </label>
-        <input type="number" name="group" id="small"/>
+        <input type="number" name="group" id="group"/>
         <label for="points">Points:  </label>
-        <input type="number" name="points" id="small"/>
+        <input type="number" name="points" id="points"/>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 
         <input type="submit" value="Submit"/>
@@ -21,12 +21,10 @@
 
 <script>
     function myFunction() {
-        var full = document.getElementById("selest").value;
-        const words = full.split('|');
-        console.log(words[0]);
-        document.getElementById("id").value = words[0];
-        document.getElementById("name").value = words[1];
-        document.getElementById("group").value = words[2];
-        document.getElementById("points").value = words[3];
+        const words = document.getElementById("selest").value.split('|');
+        document.getElementById("id").value = words[0].trim();
+        document.getElementById("name").value = words[1].trim();
+        document.getElementById("group").value = words[2].trim();
+        document.getElementById("points").value = words[3].trim();
     }
 </script>

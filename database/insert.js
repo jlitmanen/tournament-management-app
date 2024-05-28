@@ -1,42 +1,40 @@
-var db = require('./db');
+const e = require('express');
 const {fetchRanking} = require('./query.js');
+const PocketBase = require('pocketbase/cjs');
 
-function insertContent(req, res) {
-    console.log(req.body);
+const url = 'https://eye-sister.pockethost.io/'
+const pb = new PocketBase(url)
+
+async function insertContent(req, res) {
     var id = req.body.id === '' ? null : req.body.id;
-    db.run("REPLACE INTO content (id, title, text) VALUES (?, ?, ?)", 
-    [id, req.body.title, req.body.text], (err) => {
-        if(err) {
-            return console.log(err.message); 
-        }
-    })
+    if(id === null) {
+        const record = await pb.collection('content').create(req.body);
+    } else {
+        const record = await pb.collection('content').update(id, req.body);
+    }
 };
 
 
-function insertTournament(req, res, next) {
+async function insertTournament(req, res, next) {
     console.log(req.body);
     var id = req.body.id === '' ? null : req.body.id;
     var year = req.body.year === '' ? new Date().getFullYear() : req.body.year;
     var active = req.body.active === 'on' ? true : false;
     var ended = req.body.ended  === 'on' ? true : false;
-    db.run("REPLACE INTO tournament (id, name, active, ended, year) VALUES (?,?,?,?,?)", 
-    [
-        id, 
-        req.body.name, 
-        active, 
-        ended, 
-        year
-    ], (err) => {
-        if(err) {
-            return console.log(err.message); 
-        }
-    })
+    let data = {
+        id: id = id,
+        name: req.body.name,
+        year: year,
+        active: active,
+        ended: ended,
+    }
+    const record = await pb.collection('open').create(data)
     if(req.body.id === '') {
-        insertTournamentMatches(req.body, req, res, next);
+        insertTournamentMatches(record, req, res, next);
     }
 };
 
-function insertTournamentMatches(tournament) {
+async function insertTournamentMatches(tournament) {
     let players = [];
     fetchTopEight(function(data) {
         players = data;
@@ -54,76 +52,59 @@ function insertTournamentMatches(tournament) {
 
 }
 
-function fetchTopEight(callback) {
-    var query = "SELECT id FROM player order by ranking_points desc LIMIT 8";
-    var data = []; //for storing the rows.
-    db.each(query, function(err, row) {
-        data.push(row); //pushing rows into array
-    }, function(){ 
-        callback(data); 
-    });
+async function fetchTopEight(callback) {
+    const data = await pb.collection('ranking').getList(1, 8, {});
+    callback(data);
 }
 
-function createMatch(home, away, open, round) {
-    db.run("INSERT INTO matches (id, player1, player2, wins1, wins2, game_date, reported, result, withdraw, played, tournament_id, tournament_round) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);", 
-    [
-        null,
-        home,
-        away,
-        0,
-        0,
-        null,
-        false,
-        '',
-        false,
-        false,
-        open,
-        round
-    ], (err) => {
-        if(err) {
-            return console.log(err.message); 
-        }
-    })
+async function createMatch(home, away, open, round) {
+    const data = {
+        "home": home,
+        "away": away,
+        "homeWins": 0,
+        "awayWins": 0,
+        "result": "",
+        "date": null,
+        "reported": false,
+        "played": false,
+        "withdraw": false,
+        "openRound": round,
+        "openId": open
+    };
+    const record = await pb.collection('match').create(data);
 }
 
-function insertPlayer (req, res) {
-    var id = req.body.id === '' ? null : req.body.id;
-    console.log(req.body);
-    db.run("REPLACE INTO player (id, name, player_group, ranking_points) VALUES (?, ?, ?, ?)", 
-    [id, req.body.name, req.body.group, req.body.points], (err) => {
-        if(err) {
-            return console.log(err.message); 
-        }
-    })
+async function insertPlayer (req, res) {
+    const data = {
+        "name": req.body.name,
+        "group": req.body.group,
+        "points": req.body.points
+    };
+    
+    const record = await pb.collection('player').create(data);
 };
 
-function insertMatch (req, res, next) {
-    console.log(req.body);
-    db.run("REPLACE INTO matches (id, player1, player2, wins1, wins2, game_date, reported, result, withdraw, played, tournament_id) VALUES (?,?,?,?,?,?,?,?,?,?,?);", 
-    [
-        req.body.id === '' ? null : req.body.id,
-        req.body.p1,
-        req.body.p2,
-        req.body.wins1,
-        req.body.wins2,
-        req.body.game_date,
-        req.body.reported === 'on' ? true : false,
-        req.body.result,
-        req.body.withdraw === 'on' ? true : false,
-        req.body.played === 'on' ? true : false,
-        req.body.opens,
-    ], (err) => {
-        if(err) {
-            return console.log(err.message); 
-        }
-    })
-    var m = req.body;
-    var winner = m.wins1 > m.wins2 ? m.p1 : m.p2;
-    var loser = m.wins1 > m.wins2 ? m.p2 : m.p1;
+async function insertMatch (req, res, next) {
+    const data = {
+        "id": req.body.id === '' ? null : req.body.id,
+        "home": req.body.p1,
+        "away": req.body.p2,
+        "homeWins": req.body.wins1,
+        "awayWins": req.body.wins2,
+        "date": req.body.game_date,
+        "reported": req.body.reported === 'on' ? true : false,
+        "result": req.body.result,
+        "withdraw": req.body.withdraw === 'on' ? true : false,
+        "played": req.body.played === 'on' ? true : false,
+        "open": req.body.opens,
+    };
+    const m = await pb.collection('match').create(data);
+    var winner = m.homeWins > m.awayWins ? m.home : m.away;
+    var loser = m.homeWins > m.awayWins ? m.away : m.home;
     updatePoints(m, winner, loser);
 };
 
-function updatePoints(m, winner, loser) {
+async function updatePoints(m, winner, loser) {
     if(m.opens === null || m.opens === '') {
         var winnerGroup = m.p1 === winner ? m.p1group : m.p2group;
         var loserGroup = m.p1 === winner ? m.p2group : m.p1group;
@@ -141,17 +122,16 @@ function updatePoints(m, winner, loser) {
     }
 }
 
-function addPoints(player, points) {
+async function addPoints(player, points) {
     console.log("PELAAJA: " + player + " PISTEET: " + points);
-    db.run("UPDATE player SET ranking_points = ranking_points + ? WHERE id = ?", 
-    [points, player], (err) => {
-        if(err) {
-            return console.log(err.message); 
-        }
-    })
+    const data = {
+        "id": player,
+        "points": points
+    };
+    const record = await pb.collection('player').update('RECORD_ID', data);
 }
 
-function groupModifier(winnerGroup, loserGroup) {
+async function groupModifier(winnerGroup, loserGroup) {
     var compare = winnerGroup - loserGroup;
     if (winnerGroup <= loserGroup) return 1;
     return compare === 1 ? 1.5 : 2;

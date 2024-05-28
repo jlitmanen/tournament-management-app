@@ -1,10 +1,9 @@
-<table class="ranking_table" id="taapeli">
+<table class="ranking_table" style="width: 50%; margin-left: 25%;">
     <tr>
         <th>#</th>
         <th>Name</th>
         <th>Group</th>
         <th>Points</th>
-        <th>Matches</th>
     </tr>
     <% players?.forEach(function(c) { %>
         <tbody>
@@ -12,8 +11,6 @@
                 <td> <%= c.name %> </td>
                 <td> <%= c.group %> </td>
                 <td> <%= c.points %> </td>
-                <td> <%= c.matches %> </td>
-
             </tr>
         </tbody>
     <% }) %>

@@ -1,12 +1,21 @@
-<div>
+<div style="width: 20em; background: #F5D061; position: fixed; z-index: 1;">
+    <nav class="navbar sticky-top navbar-collapse">
+        <ul style="list-style: none;">
+            <% let i = 0; %>
+            <% content?.forEach(function(c) { %>
+                <li><a class="text-dark" href="#<%= i %>"><%= c.title %></a></li>
+                <% i = i+1; %>
+            <% }) %>
+        </ul>
+    </nav>
+</div>
+<div style="margin-left: 25em;">
+    <% let j = 0; %>
     <% content?.forEach(function(c) { %>
-        <details>
-            <summary class="details_summary">
-                <%= c.title %>
-            </summary>
-            <div class="details_content">
-                <p><%= c.text %></p>
-            </div>
-        </details>  
+        <div id="<%= j %>" style="color: #F5D061; margin-bottom: 2em;">
+            <h2 style="color: #F5D061;"><%= c.title %></h2>
+            <span><%- c.text %></span>
+        </div>
+        <% j = j+1 %>
     <% }) %>
 </div>

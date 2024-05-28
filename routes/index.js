@@ -31,18 +31,18 @@ router.get('/ranking', function(req, res, next) {
   res.render('ranking', { players: res.locals.players });
 });
 
-router.get('/opens', function(req, res, next) {
+router.get('/open', function(req, res, next) {
 	next();
-}, fetchTournaments, fetchMatches, function(req, res, next) {
+}, fetchMatches, fetchTournaments, function(req, res, next) {
   res.locals.filter = null;
-  res.render('opens', { opens: res.locals.opens, matches: res.locals.matches });
+  res.render('open', { open: null, openMatches: null, opens: res.locals.opens });
 });
 
 router.post('/open', function(req, res, next) {
 	next();
-}, fetchTournament, fetchMatches, function(req, res, next) {
+}, fetchTournament, fetchMatches, fetchTournaments, function(req, res, next) {
   res.locals.filter = null;
-  res.render('open', { open: res.locals.open, matches: res.locals.matches });
+  res.render('open', { open: res.locals.open, openMatches: res.locals.openMatches, opens: res.locals.opens });
 });
 
 module.exports = router;
