@@ -50,16 +50,16 @@ img {
   opacity: 0.8;
 }
 
-nav .menuItems {
+.menuItems {
   list-style: none;
   display: flex;
   justify-content: center;
 }
 
-nav .menuItems li {
+.menuItems li {
   margin: 10px;
 }
-nav .menuItems li a {
+.menuItems li a {
   text-decoration: none;
   font-size: 24px;
   font-weight: 400;
@@ -67,7 +67,7 @@ nav .menuItems li a {
   position: relative;
   text-transform: uppercase;
 }
-nav .menuItems li a::before {
+.menuItems li a::before {
   content: attr(data-item);
   transition: 0.5s;
   position: absolute;
@@ -78,12 +78,12 @@ nav .menuItems li a::before {
   width: 0;
   overflow: hidden;
 }
-nav .menuItems li a:hover::before {
+.menuItems li a:hover::before {
   width: 100%;
   transition: all 0.5s ease-in-out;
 }
 
-nav .menuItems > li:last-child
+.menuItems > li:last-child
 {
   float:right;
 }

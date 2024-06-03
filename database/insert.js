@@ -7,10 +7,14 @@ const pb = new PocketBase(url)
 
 async function insertContent(req, res) {
     var id = req.body.id === '' ? null : req.body.id;
+    var data = {
+        title: req.body.title,
+        text: req.body.text
+    }
     if(id === null) {
-        const record = await pb.collection('content').create(req.body);
+        const record = await pb.collection('content').create(data);
     } else {
-        const record = await pb.collection('content').update(id, req.body);
+        const record = await pb.collection('content').update(id, data);
     }
 };
 
