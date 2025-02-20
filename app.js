@@ -32,11 +32,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+const memoryStore = new MemoryStore({
+  checkPeriod: 86400000 // prune expired entries every 24h
+});
+
 app.use(session({
-  secret: 'keyboard cat',
-  resave: false, // don't save session if unmodified
-  saveUninitialized: false, // don't create session until something stored
-  store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' })
+  cookie: { maxAge: 86400000 },
+  store: memoryStore,
+  resave: false,
+  saveUninitialized: false,
+  unset: 'destroy',
+  secret: process.env.COOKIE_SECRET
 }));
 app.use(csrf());
 app.use(passport.authenticate('session'));
