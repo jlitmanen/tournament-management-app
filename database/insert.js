@@ -2,7 +2,7 @@ const e = require('express');
 const {fetchRanking} = require('./query.js');
 const PocketBase = require('pocketbase/cjs');
 
-const url = 'https://eye-sister.pockethost.io/'
+const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url)
 
 async function insertContent(req, res) {
@@ -79,14 +79,19 @@ async function createMatch(home, away, open, round) {
 }
 
 async function insertPlayer (req, res) {
+    const id = req.params.id;
     const data = {
+        "id": req.body.id === '' ? null : req.body.id,
         "name": req.body.name,
         "group": req.body.group,
         "points": req.body.points
     };
-    
-    const record = await pb.collection('player').create(data);
-};
+    if(data.id != null) {
+        await pb.collection('player').update(req.body.id, data);
+    } else {
+        await pb.collection('player').create(data);
+    }
+}
 
 async function insertMatch (req, res, next) {
     const data = {
@@ -102,7 +107,12 @@ async function insertMatch (req, res, next) {
         "played": req.body.played === 'on' ? true : false,
         "open": req.body.opens,
     };
-    const m = await pb.collection('match').create(data);
+    if (req.body.id === '') {
+        const m = await pb.collection('match').create(data);
+    } else {
+        const m = await pb.collection('match').update(req.body.id, data);
+    }
+
     var winner = m.homeWins > m.awayWins ? m.home : m.away;
     var loser = m.homeWins > m.awayWins ? m.away : m.home;
     updatePoints(m, winner, loser);
@@ -129,10 +139,9 @@ async function updatePoints(m, winner, loser) {
 async function addPoints(player, points) {
     console.log("PELAAJA: " + player + " PISTEET: " + points);
     const data = {
-        "id": player,
         "points": points
     };
-    const record = await pb.collection('player').update('RECORD_ID', data);
+    const record = await pb.collection('player').update(player, data);
 }
 
 async function groupModifier(winnerGroup, loserGroup) {

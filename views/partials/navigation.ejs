@@ -1,17 +1,34 @@
-<div style="position: fixed; top: 0; left: 0; background: #F5D061; color: #2A363B; width: 100%; height: 5em;">
-  <nav class="navbar sticky-top navbar-collapse" style="justify-content: center;">
-    <ul class="menuItems nav justify-content-center">
-        <li><a class="text-dark" href="/">Home</a></li>
-        <li><a class="nav-item text-dark" href="/ranking">Ranking</a></li>
-        <li><a class="nav-item text-dark" href="/results">Matches</a></li>
-        <li><a class="nav-item text-dark" href="/open">Opens</a></li>
-        <li><a class="nav-item text-dark" href="/about">About</a></li>
-        <% if(!isAuthenticated ) { %>
-          <li><a class="nav-item text-dark" href="/login">Login</a></li>
-        <% } else { %>
-          <li><a class="nav-item text-dark" href="/admin">Admin</a></li>
-          <li><a class="nav-item text-dark" href="/logout">Logout</a></li>
-        <% } %>
-    </ul>
-  </nav>
-</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <a class="navbar-brand" href="/">KTP - 2025</a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item"><a class="nav-link " href="/ranking">Ranking</a></li>
+            <li class="nav-item"><a class="nav-link " href="/results">Matches</a></li>
+            <li class="nav-item"><a class="nav-link " href="/open">Opens</a></li>
+            <li class="nav-item"><a class="nav-link " href="/about">About</a></li>
+        </ul>
+        <ul class="navbar-nav mt-2 mt-lg-0">
+            <% if(!isAuthenticated ) { %>
+            <li class="nav-item"><a class="nav-link " href="/login">Login</a></li>
+            <% } else { %>
+                <li class="nav-item dropleft">
+                    <a class="nav-link dropdown-toggle" href="/admin" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Admin
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="nav-link text-dark" href="/admin/ranking">Ranking</a>
+                        <a class="nav-link text-dark" href="/admin/results">Matches</a>
+                        <a class="nav-link text-dark" href="/admin/opens">Opens</a>
+                        <a class="nav-link text-dark" href="/admin/about">About</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-link text-dark" href="/logout">Logout</a>
+                    </div>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+</nav>

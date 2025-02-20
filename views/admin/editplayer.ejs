@@ -1,0 +1,15 @@
+<div class="form-group">
+    <form action="/admin/ranking" method="post" class="form">
+        <input type="hidden" name="id" id="id" value="<%= player?.id %>"/>
+        <label for="name">Name:  </label>
+        <input type="text" name="name" id="name" value="<%= player?.name %>"/>
+        <label for="group">Group: </label>
+        <input type="number" name="group" id="group" value="<%= player?.group %>"/>
+        <label for="points">Points:  </label>
+        <input type="number" name="points" id="points" value="<%= player?.points %>"/>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <input type="submit" value="Submit"/>
+    </form>
+</div>
+</div>

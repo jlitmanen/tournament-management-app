@@ -1,12 +1,11 @@
 var express = require('express');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
-var crypto = require('crypto');
 var router = express.Router();
 
 const PocketBase = require('pocketbase/cjs');
 
-const url = 'https://eye-sister.pockethost.io/'
+const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url)
 
 passport.use(new LocalStrategy(async function verify(username, password, cb) {

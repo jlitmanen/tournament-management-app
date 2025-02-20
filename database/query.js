@@ -1,6 +1,6 @@
 const PocketBase = require('pocketbase/cjs');
 
-const url = 'https://eye-sister.pockethost.io/'
+const url = process.env.POCKETBASE_URL;
 const client = new PocketBase(url)
 
 
@@ -13,23 +13,39 @@ async function fetchContent(req, res, next) {
 }
 
   async function fetchMatches(req, res, next) {
-    const records = await client.collection('quickMatch').getList(1,7, {filter: 'openId="'+ req.body.open +'"'});
+    const records = await client.collection('quickMatch').getList(1,7, {filter: 'openId="'+ req.body.open +'"', expand: 'home, away, openId'});
     res.locals.openMatches = records;
     next();
   }
   
   async function fetchResults(req, res, next) {
-    const records = await client.collection('quickMatch').getFullList({sort: '-date'});
+    const records = await client.collection('quickMatch').getFullList({sort: '-date', expand: 'home, away, openId'});
       res.locals.matches = records;
       next();
   }
 
   async function fetchResultsForAdmin(req, res, next) {
     const records = await client.collection('match').getFullList({
+      expand: 'home, away, openId'
     });
     res.locals.results = records;
     next();
   }
+
+  async function fetchSingleResult(req, res, next) {
+    const record = await client.collection('match').getOne(req.body.id, {
+      expand: 'home, away, openId'
+    });
+    res.locals.result = record;
+    next();
+  }
+
+async function fetchSinglePlayer(req, res, next) {
+  const record = await client.collection('player').getOne(req.body.id, {
+  });
+  res.locals.player = record;
+  next();
+}
   
   async function fetchRanking(req, res, next) {
     const records = await client.collection('ranking').getFullList({});
@@ -49,4 +65,4 @@ async function fetchContent(req, res, next) {
     next();
   }
 
-  module.exports = { fetchContent, fetchTournaments, fetchTournament, fetchMatches, fetchRanking, fetchResults, fetchResultsForAdmin}
+  module.exports = { fetchContent, fetchTournaments, fetchTournament, fetchMatches, fetchRanking, fetchResults, fetchResultsForAdmin, fetchSingleResult, fetchSinglePlayer }

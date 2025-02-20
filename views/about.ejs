@@ -1,21 +1,36 @@
-<div style="width: 20em; background: #F5D061; position: fixed; z-index: 1;">
-    <nav class="navbar sticky-top navbar-collapse">
-        <ul style="list-style: none;">
-            <% let i = 0; %>
-            <% content?.forEach(function(c) { %>
-                <li><a class="text-dark" href="#<%= i %>"><%= c.title %></a></li>
-                <% i = i+1; %>
-            <% }) %>
-        </ul>
-    </nav>
-</div>
-<div style="margin-left: 25em;">
-    <% let j = 0; %>
-    <% content?.forEach(function(c) { %>
-        <div id="<%= j %>" style="color: #F5D061; margin-bottom: 2em;">
-            <h2 style="color: #F5D061;"><%= c.title %></h2>
-            <span><%- c.text %></span>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav class="navbar sticky-top navbar-collapse">
+                <ul class="list-group" style="list-style: none;">
+                    <% content?.forEach(function(c, index) { %>
+                        <li><button type="button" class="btn btn-outline-warning btn-sm tablinks" style="width: 22em" onclick="openCity(event, <%= index %>)"><%= c.title  %></button> </li>
+                    <% }) %>
+                </ul>
+            </nav>
         </div>
-        <% j = j+1 %>
-    <% }) %>
+        <div class="col">
+            <% content?.forEach(function(c, index) { %>
+                <div id="<%= index %>" style="color: #F5D061; margin-bottom: 2em; display: none" class="tabcontent">
+                    <h2 style="color: #F5D061;"><%= c.title %></h2>
+                    <span><%- c.text %></span>
+                </div>
+            <% }) %>
+        </div>
+    </div>
 </div>
+<script>
+    function openCity(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+</script>

@@ -2,12 +2,12 @@
 <div class="match <%= winner %>">
     <div class="match-top team">
         <span class="image"></span>
-        <span class="name"><%= match.home %></span>
+        <span class="name"><%= match.expand.home?.name %></span>
         <span class="score"><%= match.homeWins %></span>
     </div>
     <div class="match-bottom team">
         <span class="image"></span>
-        <span class="name"><%= match.away %></span>
+        <span class="name"><%= match.expand.away?.name %></span>
         <span class="score"><%= match.awayWins %></span>
     </div>
     <div class="match-lines">

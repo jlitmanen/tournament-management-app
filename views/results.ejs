@@ -3,6 +3,7 @@
     cursor: pointer;
     color: white;
     border: none;
+      padding: 5px 10px;
   }
   
   .openbtn:hover {
@@ -14,43 +15,73 @@
     .sidebar {padding-top: 15px;}
     .sidebar a {font-size: 18px;}
   }
+  .hidden_row {
+            display: none;
+        }
 </style>
-<div id="main">
-<button class="openbtn" onclick="toggle()">☰ Search</button>
-<div id="mySidebar" style="display: none;">
-  <input 
-        class="form-control mr-sm-2 filter" type="search" placeholder="Search for date" 
-        id="yearInput" onkeyup="filterYear()" placeholder="Search for date.."  aria-label="Search for date">
+<div id="main" class="table-responsive">
+    <button class="openbtn" onclick="toggle()">☰ Search</button>
+    <div id="mySidebar" style="display: none;">
+      <input
+            class="form-control mr-sm-2 filter" type="search" placeholder="Search for date"
+            id="yearInput" onkeyup="filterYear()" placeholder="Search for date.."  aria-label="Search for date">
 
-  <input 
-        class="form-control mr-sm-2 filter" type="search" placeholder="Search for name" 
-        id="nameInput" onkeyup="filterName()" placeholder="Search for date.."  aria-label="Search for date">
+      <input
+            class="form-control mr-sm-2 filter" type="search" placeholder="Search for name"
+            id="nameInput" onkeyup="filterName()" placeholder="Search for date.."  aria-label="Search for date">
 
-  <%
-  formatDate = function(d) {
-      var datestring = d.substring(8, 10) + "." + d.substring(5, 7) + "." + d.substring(0, 4)
-      return datestring;
-  }
-  %>
-</div>
-<table id="myTable">
-  <tr>
-        <th>Date</th>
-        <th>Match</th>
-        <th>Result</th>
-    </tr>
-    <% results?.forEach(function(c) { %>
-        <tbody>
-            <tr>
-                <td> <%- formatDate(c.date) %> </td>
-                <td> <%- c.home %> - <%- c.away %> </td>
-                <td> <%- c.result %> </td>
-            </tr>
-        </tbody>
-    <% }) %>
-</table>
+      <%
+      formatDate = function(d) {
+          var datestring = d.substring(8, 10) + "." + d.substring(5, 7) + "." + d.substring(0, 4)
+          return datestring;
+      }
+      %>
+    </div>
+    <table id="myTable" class="table table-dark">
+      <tr>
+            <th>Date</th>
+            <th>Match</th>
+            <th>Result</th>
+        </tr>
+        <% results?.forEach(function(c) { %>
+          <% if(c.expand.home && c.expand.home) { %>
+            <tbody>
+                <tr onclick="showHideRow('<%= c.id %>');">
+                    <td> <%- formatDate(c.date) %> </td>
+                    <td> <%- c.expand.home?.name %> - <%- c.expand.away?.name %> </td>
+                    <td> <%- c.result %> </td>
+                </tr>
+                <tr class="hidden_row" id=<%- c.id %>>
+                  <td colspan="3">
+                    <%= c.details %>
+                  </td>
+                </tr>
+            </tbody>
+            <% } %>
+        <% }) %>
+    </table>
+
+<!-- TODO: figure out this shit
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+-->
 </div>
 <script>
+  function showHideRow(row) {
+    $("#" + row).toggle();
+  }
+
   function filterName() {
     var input, filter, table, tr, td, i, txtValue;
     input = document.getElementById("nameInput");

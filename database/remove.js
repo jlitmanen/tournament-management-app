@@ -1,7 +1,7 @@
 const e = require('express');
 const PocketBase = require('pocketbase/cjs');
 
-const url = 'https://eye-sister.pockethost.io/'
+const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url)
 
 async function removeContent(req, res) {
