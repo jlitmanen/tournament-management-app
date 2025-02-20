@@ -16,6 +16,9 @@
   "scripts": {
     "start": "node --env-file=.env ./bin/www"
   },
+  "engines": {
+    "node": "22.11.0"
+  },
   "dependencies": {
     "connect-ensure-login": "^0.1.1",
     "connect-sqlite3": "^0.9.13",
@@ -28,7 +31,6 @@
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "mysql2": "^3.9.7",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pluralize": "^8.0.0",
