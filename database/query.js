@@ -60,7 +60,7 @@ async function fetchSinglePlayer(req, res, next) {
   }
 
   async function fetchTournament(req, res, next) {
-    const record = await client.collection('open').getOne(req.body.open, {});
+    const record = await client.collection('open').getOne(req.body.id, {expand: 'field, field.home, field.away'});
     res.locals.open = record;
     next();
   }

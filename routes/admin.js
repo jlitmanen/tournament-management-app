@@ -4,7 +4,7 @@ var ensureLoggedIn = ensureLogIn();
 const { fetchContent, fetchTournaments, fetchRanking, fetchResultsForAdmin} = require('../database/query.js');
 const { insertContent, insertPlayer, insertMatch, insertTournament} = require('../database/insert.js')
 const { removeContent } = require('../database/remove.js')
-const { fetchResults, fetchSingleResult, fetchSinglePlayer } = require("../database/query");
+const { fetchResults, fetchSingleResult, fetchSinglePlayer, fetchTournament} = require("../database/query");
 var router = express.Router();
 
 /* GET home page. */
@@ -76,9 +76,24 @@ router.post('/ranking', ensureLoggedIn, function(req, res) {
   res.redirect('/admin/ranking')
 });
 
+router.get('/opens', ensureLoggedIn, function(req, res, next) {
+  next();
+}, fetchTournaments, function(req, res, next) {
+  res.locals.filter = null;
+  res.render('admin/opens', { opens: res.locals.opens, layout: 'layouts/main' });
+});
+
+router.post('/opens/edit', ensureLoggedIn, function(req, res, next) {
+  next();
+}, fetchTournament, function(req, res, next) {
+  res.locals.filter = null;
+  res.render('admin/editopen', { open: res.locals.open, layout: 'layouts/main' });
+});
+
 router.post('/opens', ensureLoggedIn, function(req, res, next) {
   insertTournament(req, res, next);
   res.redirect('/admin');
 });
+
 
 module.exports = router;
