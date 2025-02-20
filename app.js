@@ -15,6 +15,7 @@ var SQLiteStore = require('connect-sqlite3')(session);
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 var adminRouter = require('./routes/admin');
+const MemoryStore = require("express-session/session/memory");
 
 var app = express();
 
