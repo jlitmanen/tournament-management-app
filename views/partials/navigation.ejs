@@ -15,19 +15,11 @@
             <% if(!isAuthenticated ) { %>
             <li class="nav-item"><a class="nav-link " href="/login">Login</a></li>
             <% } else { %>
-                <li class="nav-item dropleft">
-                    <a class="nav-link dropdown-toggle" href="/admin" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Admin
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="nav-link text-dark" href="/admin/ranking">Ranking</a>
-                        <a class="nav-link text-dark" href="/admin/results">Matches</a>
-                        <a class="nav-link text-dark" href="/admin/opens">Opens</a>
-                        <a class="nav-link text-dark" href="/admin/about">About</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="nav-link text-dark" href="/logout">Logout</a>
-                    </div>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="/admin/ranking">Edit players</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/results">Edit results</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/opens">Edit opens</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/about">Edit content</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/logout">Logout</a></li>
             <% } %>
         </ul>
     </div>

@@ -49,7 +49,7 @@ router.post('/result/edit', ensureLoggedIn, function(req, res, next) {
   next();
 }, fetchSingleResult, fetchRanking, fetchTournaments, function(req, res, next) {
   res.locals.filter = null;
-  res.render('admin/editmatch', { result: res.locals.result, layout: 'layouts/main' });
+  res.render('admin/editmatch', { result: res.locals.result, player: res.locals.players, opens: res.locals.opens,  layout: 'layouts/main' });
 });
 
 router.post('/result', ensureLoggedIn, function(req, res) {
