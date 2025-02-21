@@ -1,5 +1,4 @@
-const e = require('express');
-const {fetchRanking} = require('./query.js');
+require('express');
 const PocketBase = require('pocketbase/cjs');
 
 const url = process.env.POCKETBASE_URL;
@@ -17,10 +16,7 @@ async function insertContent(req, res) {
         const record = await pb.collection('content').update(id, data);
     }
 }
-
-
 async function insertTournament(req, res, next) {
-    console.log(req.body);
     const id = req.body.id === '' ? null : req.body.id;
     const year = req.body.year === '' ? new Date().getFullYear() : req.body.year;
     const active = req.body.active === 'on';
@@ -44,16 +40,18 @@ async function insertTournamentMatches(tournament) {
         players = data;
         console.log(players);
     });
-    
+    let matches = [];
     // first stage 1-8 : 4-5 x 2-7 : 3-6
-    await createMatch(players[0], players[6], tournament, 1);
-    await createMatch(players[3], players[4], tournament, 1);
-    await createMatch(players[1], players[6], tournament, 1);
-    await createMatch(players[2], players[5], tournament, 1);
-    await createMatch(null, null, tournament, 2);
-    await createMatch(null, null, tournament, 2);
-    await createMatch(null, null, tournament, 3);
+    matches.push(await createMatch(players[0], players[6], tournament, 1).id);
+    matches.push(await createMatch(players[3], players[4], tournament, 1).id);
+    matches.push(await createMatch(players[1], players[6], tournament, 1).id);
+    matches.push(await createMatch(players[2], players[5], tournament, 1).id);
+    matches.push(await createMatch(null, null, tournament, 2).id);
+    matches.push(await createMatch(null, null, tournament, 2).id);
+    matches.push(await createMatch(null, null, tournament, 3).id);
 
+    tournament.field = matches;
+    await pb.collection('open').update(tournament.id, tournament)
 }
 
 async function fetchTopEight(callback) {
@@ -63,8 +61,8 @@ async function fetchTopEight(callback) {
 
 async function createMatch(home, away, open, round) {
     const data = {
-        "home": home,
-        "away": away,
+        "home": home?.id,
+        "away": away?.id,
         "homeWins": 0,
         "awayWins": 0,
         "result": "",
@@ -73,13 +71,13 @@ async function createMatch(home, away, open, round) {
         "played": false,
         "withdraw": false,
         "openRound": round,
-        "openId": open
+        "openId": open.id,
+        "factor": 1
     };
-    const record = await pb.collection('match').create(data);
+    await pb.collection('match').create(data);
 }
 
-async function insertPlayer (req, res) {
-    const id = req.params.id;
+async function insertPlayer (req) {
     const data = {
         "id": req.body.id === '' ? null : req.body.id,
         "name": req.body.name,
@@ -93,19 +91,20 @@ async function insertPlayer (req, res) {
     }
 }
 
-async function insertMatch (req, res, next) {
+async function insertMatch (req, next) {
     const data = {
         "id": req.body.id === '' ? null : req.body.id,
-        "home": req.body.p1,
-        "away": req.body.p2,
-        "homeWins": req.body.wins1,
-        "awayWins": req.body.wins2,
-        "date": req.body.game_date,
+        "home": req.body.home,
+        "away": req.body.away,
+        "homeWins": req.body.homeWins,
+        "awayWins": req.body.awayWins,
+        "date": req.body.date,
         "reported": req.body.reported === 'on',
         "result": req.body.result,
         "withdraw": req.body.withdraw === 'on',
         "played": req.body.played === 'on',
-        "open": req.body.opens,
+        "openId": req.body.openId,
+        "factor": req.body.factor,
     };
     if (req.body.id === '') {
         const m = await pb.collection('match').create(data);
@@ -118,21 +117,18 @@ async function insertMatch (req, res, next) {
     await updatePoints(m, winner, loser);
 }
 
-async function updatePoints(m, winner, loser) {
+async function updatePoints(match, winner, loser) {
     let points;
-    if(m.opens === null || m.opens === '') {
-        const winnerGroup = m.p1 === winner ? m.p1group : m.p2group;
-        const loserGroup = m.p1 === winner ? m.p2group : m.p1group;
-        const winnerWins = m.p1 === winner ? m.wins1 : m.wins2;
-        const modifier = groupModifier(winnerGroup, loserGroup);
-        console.log("MODIFIER: " + modifier);
+    if(match.openId === null || match.openId === '') {
+        const winnerWins = match.home === winner ? match.homeWins : match.awayWins;
+        const modifier = groupModifier(winner.group, loser.group);
 
         points = (winnerWins * modifier) + 1;
-        points = m.withdraw === 'on' ? points / 2 : points;
+        points = match.withdraw === 'on' ? points / 2 : points;
         await addPoints(winner, points);
-        await addPoints(loser, m.withdraw === 'on' ? 0 : 1);
+        await addPoints(loser, match.withdraw === 'on' ? 0 : 1);
     } else {
-        points = m.t_round === 3 ? 6 : 3;
+        points = match.openRound === 3 ? 6 : 3;
         await addPoints(winner, points);
     }
 }
@@ -142,7 +138,7 @@ async function addPoints(player, points) {
     const data = {
         "points": points
     };
-    const record = await pb.collection('player').update(player, data);
+    await pb.collection('player').update(player.id, data);
 }
 
 async function groupModifier(winnerGroup, loserGroup) {

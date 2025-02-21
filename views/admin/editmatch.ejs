@@ -64,6 +64,8 @@
                             <% }) %>
                         </select>
                     </div>
+
+                    <input type="hidden" name="factor" id="factor" value="<%= result.factor ? result.factor : 1 %>"/>
                     <input type="hidden" name="id" id="id" value="<%= result?.id %>"/>
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <button type="submit" class="btn btn-primary btn-lg btn-block">Tallenna</button>

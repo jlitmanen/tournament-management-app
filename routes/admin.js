@@ -53,7 +53,7 @@ router.post('/result/edit', ensureLoggedIn, function(req, res, next) {
 });
 
 router.post('/result', ensureLoggedIn, function(req, res) {
-  insertMatch(req, res);
+  insertMatch(req);
   res.redirect('/admin/results');
 });
 
@@ -71,9 +71,19 @@ router.post('/ranking/edit', ensureLoggedIn, function(req, res, next) {
   res.render('admin/editplayer', { player: res.locals.player, layout: 'layouts/main' });
 });
 
-router.post('/ranking', ensureLoggedIn, function(req, res) {
-  insertPlayer(req, res);
-  res.redirect('/admin/ranking')
+router.post('/ranking/add', ensureLoggedIn, function(req, res, next) {
+  next();
+}, function(req, res, next) {
+  res.locals.filter = null;
+  res.render('admin/editplayer', { player: null, layout: 'layouts/main' });
+});
+
+router.post('/ranking', ensureLoggedIn, function(req, res, next) {
+  insertPlayer(req);
+  next();
+}, fetchRanking, function(req, res, next) {
+  res.locals.filter = null;
+  res.render('admin/ranking', { player: res.locals.player, layout: 'layouts/main' });
 });
 
 router.get('/opens', ensureLoggedIn, function(req, res, next) {
