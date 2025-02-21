@@ -1,11 +1,11 @@
-var express = require('express');
-var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
-var ensureLoggedIn = ensureLogIn();
+const express = require('express');
+const ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
+const ensureLoggedIn = ensureLogIn();
 const { fetchContent, fetchTournaments, fetchRanking, fetchResultsForAdmin} = require('../database/query.js');
 const { insertContent, insertPlayer, insertMatch, insertTournament} = require('../database/insert.js')
 const { removeContent } = require('../database/remove.js')
 const { fetchResults, fetchSingleResult, fetchSinglePlayer, fetchTournament} = require("../database/query");
-var router = express.Router();
+const router = express.Router();
 
 /* GET home page. */
 router.get('/', ensureLoggedIn, function(req, res, next) {

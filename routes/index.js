@@ -1,8 +1,8 @@
-var express = require('express');
-var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
-var ensureLoggedIn = ensureLogIn();
+const express = require('express');
+const ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
+const ensureLoggedIn = ensureLogIn();
 const {fetchContent, fetchTournaments, fetchTournament, fetchMatches, fetchRanking, fetchResults} = require('../database/query.js');
-var router = express.Router();
+const router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

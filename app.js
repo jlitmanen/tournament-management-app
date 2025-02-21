@@ -10,14 +10,14 @@ const logger = require('morgan');
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
-var SQLiteStore = require('connect-sqlite3')(session);
+const SQLiteStore = require('connect-sqlite3')(session);
 
-var indexRouter = require('./routes/index');
-var authRouter = require('./routes/auth');
-var adminRouter = require('./routes/admin');
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
+const adminRouter = require('./routes/admin');
 const MemoryStore = require("express-session/session/memory");
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.use(expressLayouts)
@@ -48,7 +48,7 @@ app.use(session({
 app.use(csrf());
 app.use(passport.authenticate('session'));
 app.use(function(req, res, next) {
-  var msgs = req.session.messages || [];
+  const msgs = req.session.messages || [];
   res.locals.messages = msgs;
   res.locals.hasMessages = !! msgs.length;
   req.session.messages = [];

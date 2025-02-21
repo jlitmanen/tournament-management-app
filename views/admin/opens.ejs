@@ -56,7 +56,7 @@
 
 <script>
     function myFunction() {
-        var words = document.getElementById("selest").value.split('|');
+        const words = document.getElementById("selest").value.split('|');
         document.getElementById("id").value = words[0].trim();
         document.getElementById("name").value = words[1].trim();
         document.getElementById("active").checked = words[2].trim() === 'true';

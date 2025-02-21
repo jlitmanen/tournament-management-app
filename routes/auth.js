@@ -1,7 +1,7 @@
-var express = require('express');
-var passport = require('passport');
-var LocalStrategy = require('passport-local');
-var router = express.Router();
+const express = require('express');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const router = express.Router();
 
 const PocketBase = require('pocketbase/cjs');
 

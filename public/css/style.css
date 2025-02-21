@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700');
 body {
   font-family: 'source sans pro', sans-serif;
-  padding-top: 40px;
-  padding-bottom: 40px;
   background-color: #2A363B;
   color: #310B0B;
   color-scheme: light dark;
@@ -46,13 +44,12 @@ img {
   display: table-cell;
   counter-increment: rowNumber;
   content: counter(rowNumber) ".";
-  padding-right: 0.3em;
   text-align: left;
   padding: 15px;
 }
 
 .filter {
-  background-image: url('/img/searchicon.png');
+  background-image: url('../img/searchicon.png');
   background-position: 10px 10px;
   background-repeat: no-repeat;
   font-size: 16px;
@@ -119,7 +116,7 @@ h1 {
 	 position: absolute;
 	 top: 50%;
 	 bottom: 0;
-	 margin-top: 0px;
+	 margin-top: 0;
 	 right: -1px;
 }
  .match-lines .line {
@@ -195,17 +192,17 @@ h1 {
 }
  
  .disable-borders {
-	 border-width: 0px !important;
+	 border-width: 0 !important;
 }
  .disable-borders .team {
-	 border-width: 0px !important;
+	 border-width: 0 !important;
 }
  .disable-seperator .match-top {
-	 border-bottom: 0px !important;
+	 border-bottom: 0 !important;
 }
  .disable-seperator .match-bottom {
-	 border-top: 0px !important;
+	 border-top: 0 !important;
 }
  .disable-seperator .team:first-child {
-	 margin-bottom: 0px;
+	 margin-bottom: 0;
 }
