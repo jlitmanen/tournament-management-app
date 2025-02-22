@@ -1,26 +1,26 @@
-<form id="about" action="/admin/about" method="post">
-    <input type="hidden" name="id" id="id" />
-    <textarea name="title" id="title" class="form-control" form="about" placeholder="Add title here..."></textarea>
-    <textarea name="text" id="text" class="form-control" form="about" placeholder="Add content here..."></textarea>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-    <input type="submit" value="Add"/>
-</form>
-
 <div>
     <table class="table table-striped table-dark">
         <thead>
             <tr>
-                <th>Title</th><th>Content</th>                
+                <th>Otsikko</th><th>Sisältö</th>
+                <th><form id="about" action="/admin/about/add" method="post">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        <input type="submit" value="Add"/>
+                    </form>
+                </th>
             </tr>
         </thead>
         <tbody>
             <% content?.forEach(function(c) { %>
                 <tr>
-                    <td contenteditable="true"><%- c.title %></td>
-                    <td contenteditable="true"><%- c.text %></td>
+                    <td><%- c.title %></td>
+                    <td><%- c.text %></td>
                     <td>
-                        <input type="button" id="save_button3" value="Save" class="save" onclick="save_row('<%- c.id %>')">
-                        <input type="button" value="Delete" class="delete" onclick="delete_row('<%- c.id %>')">
+                        <form method="POST" action="/admin/about/edit">
+                            <input type="hidden" name="id" id="id" value="<%= c.id %>"/>
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                            <input type="submit" value="Edit" class="edit">
+                        </form>
                     </td>
                 </tr>
                 

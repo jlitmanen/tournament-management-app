@@ -39,8 +39,13 @@ async function fetchContent(req, res, next) {
     next();
   }
 
+async function fetchSingleContent(req, res, next) {
+  res.locals.content = await client.collection('content').getOne(req.body.id, {});
+  next();
+}
+
 async function fetchSinglePlayer(req, res, next) {
-  res.locals.player = await client.collection('player').getOne(req.body.id, {});
+  res.locals.player = await client.collection('content  ').getOne(req.body.id, {});
   next();
 }
   
@@ -59,4 +64,4 @@ async function fetchSinglePlayer(req, res, next) {
     next();
   }
 
-  module.exports = { fetchContent, fetchTournaments, fetchTournament, fetchMatches, fetchRanking, fetchResults, fetchResultsForAdmin, fetchSingleResult, fetchSinglePlayer }
+  module.exports = { fetchContent, fetchTournaments, fetchTournament, fetchMatches, fetchRanking, fetchResults, fetchResultsForAdmin, fetchSingleResult, fetchSinglePlayer, fetchSingleContent }

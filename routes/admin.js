@@ -4,7 +4,7 @@ const ensureLoggedIn = ensureLogIn();
 const { fetchContent, fetchTournaments, fetchRanking, fetchResultsForAdmin} = require('../database/query.js');
 const { insertContent, insertPlayer, insertMatch, insertTournament} = require('../database/insert.js')
 const { removeContent } = require('../database/remove.js')
-const { fetchResults, fetchSingleResult, fetchSinglePlayer, fetchTournament} = require("../database/query");
+const { fetchResults, fetchSingleResult, fetchSinglePlayer, fetchSingleContent, fetchTournament} = require("../database/query");
 const router = express.Router();
 
 /* GET home page. */
@@ -28,9 +28,24 @@ router.get('/about', ensureLoggedIn, function(req, res, next) {
   res.render('admin/about', { content: res.locals.content });
 });
 
+router.post('/about/edit', ensureLoggedIn, function(req, res, next) {
+  next();
+}, fetchSingleContent, function(req, res, next) {
+  res.locals.filter = null;
+  res.render('admin/editcontent', { content: res.locals.content,  layout: 'layouts/main' });
+});
+
+router.post('/about/add', ensureLoggedIn, function(req, res, next) {
+  next();
+}, function(req, res, next) {
+  res.locals.filter = null;
+  res.render('admin/editcontent', { content: null, layout: 'layouts/main' });
+});
+
+
 router.post('/about', ensureLoggedIn, function(req, res) {
   insertContent(req, res);
-  res.redirect('/admin');
+  res.redirect('/admin/about');
 });
 
 router.post('/about/delete', ensureLoggedIn, function(req, res) {

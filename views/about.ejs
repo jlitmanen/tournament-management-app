@@ -1,21 +1,29 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <nav class="navbar sticky-top navbar-collapse">
-                <ul class="list-group" style="list-style: none;">
-                    <% content?.forEach(function(c, index) { %>
-                        <li><button type="button" class="btn btn-outline-warning btn-sm tablinks" style="width: 22em" onclick="openCity(event, <%= index %>)"><%= c.title  %></button> </li>
-                    <% }) %>
-                </ul>
-            </nav>
+            <div class="card">
+                <div class="card-body">
+                    <nav class="navbar sticky-top navbar-collapse">
+                        <ul class="list-group list-group-flush" style="list-style: none;">
+                            <% content?.forEach(function(c, index) { %>
+                                <li class="nav-item tablinks" style="cursor: pointer" onclick="openCity(event, <%= index %>)"><%= c.title  %></li>
+                            <% }) %>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <div class="col">
-            <% content?.forEach(function(c, index) { %>
-                <div id="<%= index %>" style="color: #F5D061; margin-bottom: 2em; display: none" class="tabcontent">
-                    <h2 style="color: #F5D061;"><%= c.title %></h2>
-                    <span><%- c.text %></span>
+            <div class="card">
+                <div class="card-body overflow-auto">
+                    <% content?.forEach(function(c, index) { %>
+                        <div id="<%= index %>" style="display: none" class="tabcontent">
+                            <h2><%= c.title %></h2>
+                            <span><%- c.text %></span>
+                        </div>
+                    <% }) %>
                 </div>
-            <% }) %>
+            </div>
         </div>
     </div>
 </div>

@@ -1,0 +1,24 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Muokkaa</h3>
+                    <form action="/admin/about" method="post" class="form">
+                        <div class="form-group">
+                            <label for="name">Otsikko:  </label>
+                            <input class="form-control" type="text" name="title" id="title" value="<%= content?.title %>"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="group">Sisältö: </label>
+                            <textarea class="form-control" name="text" id="text" rows="15"><%- content?.text %></textarea>
+                        </div>
+                        <input type="hidden" name="id" id="id" value="<%= content?.id %>"/>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Tallenna</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
