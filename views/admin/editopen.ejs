@@ -1,0 +1,32 @@
+<%
+formatDate = function(d) {
+    return d.substring(8, 10) + "." + d.substring(5, 7) + "." + d.substring(0, 4);
+}
+%>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+                <ul class="list-group">
+                    <li class="list-group-item"><%= open.name %></li>
+                    <% open.expand.field?.forEach(function (match){ %>
+                        <li class="list-group-item">
+                            <form role="form" action="/admin/open/match" method="post">
+                                <%- formatDate(match.date) %> <br />
+                                <div class="row">
+                                    <div class="col-md-6"><label><%- match.expand.home.name %></label><input class="form-control form-control-sm" type="number" value="<%- match.homeWins %>" title="home" name="homeWins" id="homeWins" />
+                                    </div>
+                                    <div class="col-md-6"><label><%- match.expand.away.name %></label><input class="form-control form-control-sm" type="number" value="<%- match.awayWins %>" title="away" name="awayWins" id="awayWins" />
+                                    </div>
+                                </div>
+
+                                <label for="result">Lisätiedot</label><input class="form-control form-control-sm" type="text" value="<%- match.result %>" name="result" id="result" />
+                                <input type="hidden" name="id" value="<%- match.id %>" id="id" />
+                                <button type="submit" class="btn btn-success btn-lg btn-block">Tallenna</button>
+                                <button type="button" class="btn btn-danger btn-lg btn-block" onclick="history.back()">Peruuta</button>
+                            </form>
+                        </li>
+                    <% }) %>
+                </ul>
+        </div>
+    </div>
+</div>
