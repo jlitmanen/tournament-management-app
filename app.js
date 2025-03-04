@@ -11,11 +11,11 @@ const logger = require('morgan');
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
 const SQLiteStore = require('connect-sqlite3')(session);
+const db = new sqlite("/var/sessions.db", { verbose: console.log });
 
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const adminRouter = require('./routes/admin');
-const MemoryStore = require("express-session/session/memory");
 
 const app = express();
 
@@ -33,18 +33,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-const memoryStore = new MemoryStore({
-  checkPeriod: 86400000 // prune expired entries every 24h
-});
 
 app.use(session({
   cookie: { maxAge: 86400000 },
-  store: memoryStore,
+  store: new SqliteStore({
+    client: db, 
+    expired: {
+      clear: true,
+      intervalMs: 900000 //ms = 15min
+    }
+  }),
   resave: false,
   saveUninitialized: false,
   unset: 'destroy',
   secret: process.env.COOKIE_SECRET
 }));
+
 app.use(csrf());
 app.use(passport.authenticate('session'));
 app.use(function(req, res, next) {
