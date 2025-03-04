@@ -20,6 +20,8 @@
     "node": "22.11.0"
   },
   "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "better-sqlite3-session-store": "^0.1.0",
     "connect-ensure-login": "^0.1.1",
     "connect-sqlite3": "^0.9.13",
     "cookie-parser": "~1.4.4",
