@@ -50,7 +50,7 @@ async function fetchSinglePlayer(req, res, next) {
 }
   
   async function fetchRanking(req, res, next) {
-    res.locals.players = await client.collection('ranking').getFullList({});
+    res.locals.players = await client.collection('points').getFullList({});
     next();
   }
 

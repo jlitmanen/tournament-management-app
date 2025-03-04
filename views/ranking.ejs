@@ -2,19 +2,34 @@
     <table class="table table-bordered table-hover">
         <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Group</th>
-            <th>Points</th>
+            <th>Nimi</th>
+            <th>Ryhmä</th>
+            <th>Pisteet</th>
         </tr>
         <% players?.forEach(function(c, i) { %>
             <tbody>
-                <tr>
+                <tr onclick="showHideRow('<%= c.id %>');">
                     <td> <%= i + 1 %>.      </td>
                     <td> <%= c.name %>      </td>
-                    <td> <%= c.group %>     </td>
-                    <td> <%= c.points %>    </td>
+                    <td> <%= c.ryhma %>     </td>
+                    <td> <%= c.kokonaisPisteet %>    </td>
                 </tr>
+                <tr class="hidden_row" style="display: none;" id=<%- c.id %>>
+                    <td colspan="4">
+                      Pelatut ottelut: <%= c.pelatutOttelut %>
+                    </td>
+                  </tr>
             </tbody>
         <% }) %>
     </table>
 </div>
+<script>
+    function showHideRow(row) {
+        $("#" + row).toggle();
+    }
+
+    function toggle() {
+        var ele = document.getElementById("mySidebar");
+        ele.style.display = ele.style.display == "block" ? "none" : "block";
+    }
+</script>
