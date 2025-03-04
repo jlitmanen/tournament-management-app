@@ -1,4 +1,4 @@
-<style>  
+<style>
   .openbtn {
     cursor: pointer;
     color: white;
@@ -36,7 +36,7 @@
       }
       %>
     </div>
-    <table id="myTable" class="table table-dark">
+    <table id="myTable" class="table table-dark table-bordered table-hover">
       <tr>
             <th>Date</th>
             <th>Match</th>
@@ -59,26 +59,15 @@
             <% } %>
         <% }) %>
     </table>
-
-<!-- TODO: figure out this shit
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
--->
 </div>
 <script>
   function showHideRow(row) {
     $("#" + row).toggle();
+  }
+
+  function toggle() {
+    var ele = document.getElementById("mySidebar");
+    ele.style.display = ele.style.display == "block" ? "none" : "block";
   }
 
   function filterName() {
@@ -96,7 +85,7 @@
         } else {
           tr[i].style.display = "none";
         }
-      }       
+      }
     }
   }
   function filterYear() {
@@ -114,19 +103,7 @@
         } else {
           tr[i].style.display = "none";
         }
-      }       
-    }
-  }
-  function toggle() {
-
-    var ele = document.getElementById("mySidebar");
-
-    if (ele.style.display == "block") {
-
-        ele.style.display = "none";
-    }
-    else {
-        ele.style.display = "block";
+      }
     }
   }
 </script>

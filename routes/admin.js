@@ -67,6 +67,13 @@ router.post('/result/edit', ensureLoggedIn, function(req, res, next) {
   res.render('admin/editmatch', { result: res.locals.result, player: res.locals.players, opens: res.locals.opens,  layout: 'layouts/main' });
 });
 
+router.post('/result/add', ensureLoggedIn, function(req, res, next) {
+  next();
+}, fetchRanking, fetchTournaments, function(req, res, next) {
+  res.locals.filter = null;
+  res.render('admin/editmatch', { result: null, player: res.locals.players, opens: res.locals.opens,  layout: 'layouts/main' });
+});
+
 router.post('/result', ensureLoggedIn, function(req, res) {
   insertMatch(req);
   res.redirect('/admin/results');
@@ -83,7 +90,7 @@ router.post('/ranking/edit', ensureLoggedIn, function(req, res, next) {
   next();
 }, fetchSinglePlayer, function(req, res, next) {
   res.locals.filter = null;
-  res.render('admin/editplayer', { player: res.locals.player, layout: 'layouts/main' });
+  res.render('admin/editplayer', { player: res.locals.player });
 });
 
 router.post('/ranking/add', ensureLoggedIn, function(req, res, next) {

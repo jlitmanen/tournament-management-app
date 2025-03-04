@@ -45,7 +45,7 @@ async function fetchSingleContent(req, res, next) {
 }
 
 async function fetchSinglePlayer(req, res, next) {
-  res.locals.player = await client.collection('content  ').getOne(req.body.id, {});
+  res.locals.player = await client.collection('player').getOne(req.body.id, {});
   next();
 }
   

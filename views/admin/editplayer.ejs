@@ -19,7 +19,8 @@
                         </div>
                         <input type="hidden" name="id" id="id" value="<%= player?.id %>"/>
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Tallenna</button>
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Tallenna</button>
+                        <button type="button" class="btn btn-danger btn-lg btn-block" onclick="history.back()">Peruuta</button>
                     </form>
                 </div>
             </div>

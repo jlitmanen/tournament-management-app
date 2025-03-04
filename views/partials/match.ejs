@@ -1,20 +1,16 @@
 <% winner =  match.homeWins > match.awayWins ? 'winner-top' : 'winner-bottom'%>
-<div class="match <%= winner %>">
-    <div class="match-top team">
-        <span class="image"></span>
-        <span class="name"><%= match.expand.home?.name %></span>
-        <span class="score"><%= match.homeWins %></span>
+<div class="match">
+    <div>
+        <div class="input-group">
+            <input type="text" disabled class="form-control" value="<%= match.expand.home?.name %>">
+            <span class="input-group-text"><%= match.homeWins %></span>
+        </div>
     </div>
-    <div class="match-bottom team">
-        <span class="image"></span>
-        <span class="name"><%= match.expand.away?.name %></span>
-        <span class="score"><%= match.awayWins %></span>
+    <div>
+        <div class="input-group">
+            <input type="text" disabled class="form-control" value="<%= match.expand.away?.name %>">
+            <span class="input-group-text"><%= match.awayWins %></span>
+        </div>
     </div>
-    <div class="match-lines">
-        <div class="line one"></div>
-        <div class="line two"></div>
-    </div>
-    <div class="match-lines alt">
-        <div class="line one"></div>
-    </div>
+
 </div>

@@ -1,78 +1,71 @@
-<script>
-    const test = '<%= JSON.stringify(result) %>'; // test is now a valid js object
-    console.log(test);
-</script>
-<script>
-
-</script>
-
 <form method="post" action="/admin/result">
     <div class="container">
         <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="home">Koti:</label>
-                    <select id="selest" class="form-control">
-                        <option value="" disabled selected>Valitse...</option>
-                        <% players?.forEach(function(c) { %>
-                            <option value='<%= c.id %>' <%= c.id === result.expand.home?.id ? 'selected' : '' %>><%= c.name %></option>
-                        <% }) %>
-                    </select>
-                    
-                    <label for="homeWins">Erävoitot, koti (0-2):</label>
-                    <input  class="form-control" type="number" id="homeWins" name="homeWins" min="0" max="2" value="<%- result.homeWins %>">
-                </div>
-                <div class="col-md-6">
-                    <label for="away">Vieras:</label>
-                    <select id="selest" class="form-control">
-                        <option value="" disabled selected>Valitse...</option>
-                        <% players?.forEach(function(c) { %>
-                            <option value='<%= c.id %>' <%= c.id === result.expand.away?.id ? 'selected' : '' %>><%= c.name %></option>
-                        <% }) %>
-                    </select>
-                    
-                    <label for="awayWins">Erävoitot, vieras (0-2):</label>
-                    <input class="form-control" type="number" id="awayWins" name="awayWins" min="0" max="2" value="<%- result.awayWins %>">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <label for="details">Lisätiedot (max 255 merkkiä):</label>
-                        <input class="form-control" type="text" id="details" name="details" value="<%- result.result %>">
-                    </div>
-                    <div class="form-group">
-                        <label for="withdraw">Luovutus</label>
-                        <input class="form-check" type="checkbox" id="withdraw" name="withdraw" <%- result.withdraw ? 'checked' : '' %>>
-                    </div>
-                    <div class="form-group">
-                        <label for="open">Turnaus:</label>
-                        <select id="selest" name="openId" class="form-control">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="home">Koti:</label>
+                        <select id="selest" class="form-select">
                             <option value="" disabled selected>Valitse...</option>
-                            <%  let years = [2022, 2023, 2024, 2025, 2026];
-                            years.forEach(function(year) { %>
-                                <optgroup label="<%= year %>">
-                                    <% opens?.forEach(function(open) { %>
-                                        <% if (open.year === year) { %>
-                                            <option value='<%= open.id %>' <%= open.id === result.expand.openId?.id ? 'selected' : '' %>>
-                                                <%= open.name %> <%= open.year %>
-                                            </option>
-                                        <% } %>
-                                    <% }) %>
-                                </optgroup>
+                            <% players?.forEach(function(c) { %>
+                                <option value='<%= c.id %>' <%= c.id === result?.expand.home?.id ? 'selected' : '' %>><%= c.name %></option>
                             <% }) %>
                         </select>
+                        
+                        <label for="homeWins">Erävoitot, koti (0-2):</label>
+                        <input  class="form-control" type="number" id="homeWins" name="homeWins" min="0" max="2" value="<%- result?.homeWins %>">
                     </div>
+                    <div class="col-md-6">
+                        <label for="away">Vieras:</label>
+                        <select id="selest" class="form-select">
+                            <option value="" disabled selected>Valitse...</option>
+                            <% players?.forEach(function(c) { %>
+                                <option value='<%= c.id %>' <%= c.id === result?.expand.away?.id ? 'selected' : '' %>><%= c.name %></option>
+                            <% }) %>
+                        </select>
+                        
+                        <label for="awayWins">Erävoitot, vieras (0-2):</label>
+                        <input class="form-control" type="number" id="awayWins" name="awayWins" min="0" max="2" value="<%- result?.awayWins %>">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="details">Lisätiedot (max 255 merkkiä):</label>
+                            <input class="form-control" type="text" id="details" name="details" value="<%- result?.result %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="withdraw">Luovutus</label>
+                            <input class="form-check" type="checkbox" id="withdraw" name="withdraw" <%- result?.withdraw ? 'checked' : '' %>>
+                        </div>
+                        <div class="form-group">
+                            <label for="open">Turnaus:</label>
+                            <select id="selest" name="openId" class="form-control">
+                                <option value="" disabled selected>Valitse...</option>
+                                <%  let years = [2022, 2023, 2024, 2025, 2026];
+                                years.forEach(function(year) { %>
+                                    <optgroup label="<%= year %>">
+                                        <% opens?.forEach(function(open) { %>
+                                            <% if (open.year === year) { %>
+                                                <option value='<%= open.id %>' <%= open.id === result?.expand.openId?.id ? 'selected' : '' %>>
+                                                    <%= open.name %> <%= open.year %>
+                                                </option>
+                                            <% } %>
+                                        <% }) %>
+                                    </optgroup>
+                                <% }) %>
+                            </select>
+                        </div>
 
-                    <input type="hidden" name="factor" id="factor" value="<%= result.factor ? result.factor : 1 %>"/>
-                    <input type="hidden" name="id" id="id" value="<%= result?.id %>"/>
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Tallenna</button>
+                        <input type="hidden" name="factor" id="factor" value="<%= result?.factor ? result.factor : 1 %>"/>
+                        <input type="hidden" name="id" id="id" value="<%= result?.id %>"/>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        <br />
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Tallenna</button>
+                        <button type="button" class="btn btn-danger btn-lg btn-block" onclick="history.back()">Peruuta</button>                
+                    </div>
                 </div>
             </div>
-
-    </div>
-    </div>
+        </div>
     </div>
 </form>

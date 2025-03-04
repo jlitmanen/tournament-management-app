@@ -2,25 +2,24 @@
     <div class="container-table100">
         <div class="wrap-table100">
             <div class="table100">
-                <button type="button" onclick="addRow()">Add result</button>
-                <table class="table table-striped table-dark" id="results">
+                <table class="table table-dark table-bordered table-hover">
                     <thead>
                         <tr class="table100-head">
-                            <th>Home</th><th>Away</th><th>HW</th><th>AW</th><th title="Result">Result</th><th>Open</th><th></th>
+                            <th>Home</th><th>Away</th><th>HW</th><th>AW</th><th title="Result">Result</th><th>Open</th><th><form method="post" action="/admin/result/add"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><input type="submit" value="Add" class="edit"></form></th>
                         </tr>
                     </thead>
                     <tbody>
                         <% results.forEach(function(c) { %>
                             <tr>
                                 <form action="/admin/result/edit" method="post">
-                                    <td class="column1"><%= c.expand.home?.name  %></td>
-                                    <td class="column2"><%= c.expand.away?.name  %></td>
-                                    <td class="column3"><%- c.homeWins %></td>
-                                    <td class="column4"><%- c.awayWins %></td>
-                                    <td class="column5"><%- c.result %></td>
-                                    <td class="column6"><%= c.expand.openId?.name %></td>
+                                    <td class="column1"><%= c?.expand.home?.name  %></td>
+                                    <td class="column2"><%= c?.expand.away?.name  %></td>
+                                    <td class="column3"><%- c?.homeWins %></td>
+                                    <td class="column4"><%- c?.awayWins %></td>
+                                    <td class="column5"><%- c?.result %></td>
+                                    <td class="column6"><%= c?.expand.openId?.name %></td>
                                     <td class="column7">
-                                        <input type="hidden" name="id" id="id" value="<%= c.id %>"/>
+                                        <input type="hidden" name="id" id="id" value="<%= c?.id %>"/>
                                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                                         <input type="submit" value="Edit" class="edit" >
                                     </td>

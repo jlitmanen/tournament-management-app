@@ -11,9 +11,9 @@ async function insertContent(req, res) {
         text: req.body.text
     }
     if(id === null) {
-        const record = await pb.collection('content').create(data);
+        await pb.collection('content').create(data);
     } else {
-        const record = await pb.collection('content').update(id, data);
+        await pb.collection('content').update(id, data);
     }
 }
 async function insertTournament(req, res, next) {
