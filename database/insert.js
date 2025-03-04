@@ -92,6 +92,14 @@ async function insertPlayer (req) {
 }
 
 async function insertMatch (req, next) {
+    let m = req.body;
+    let winner = m.homeWins > m.awayWins ? m.home : m.away;
+    let loser = m.homeWins > m.awayWins ? m.away : m.home;
+
+    winner = await pb.collection('player').getOne(winner, {});
+    loser = await pb.collection('player').getOne(loser, {});
+    let modifier = groupModifier(winner.group, loser.group);
+
     const data = {
         "id": req.body.id === '' ? null : req.body.id,
         "home": req.body.home,
@@ -104,27 +112,25 @@ async function insertMatch (req, next) {
         "withdraw": req.body.withdraw === 'on',
         "played": req.body.played === 'on',
         "openId": req.body.openId,
-        "factor": req.body.factor,
+        "factor": modifier ? modifier : 1,
     };
+
     if (req.body.id === '') {
-        const m = await pb.collection('match').create(data);
+        m = await pb.collection('match').create(data);
     } else {
-        const m = await pb.collection('match').update(req.body.id, data);
+        m = await pb.collection('match').update(req.body.id, data);
     }
 
-    const winner = m.homeWins > m.awayWins ? m.home : m.away;
-    const loser = m.homeWins > m.awayWins ? m.away : m.home;
-    await updatePoints(m, winner, loser);
+    await updatePoints(m, winner, loser, modifier);
 }
 
-async function updatePoints(match, winner, loser) {
+async function updatePoints(match, winner, loser, factor) {
     let points;
     if(match.openId === null || match.openId === '') {
         const winnerWins = match.home === winner ? match.homeWins : match.awayWins;
-        const modifier = groupModifier(winner.group, loser.group);
 
-        points = (winnerWins * modifier) + 1;
-        points = match.withdraw === 'on' ? points / 2 : points;
+        points = (winnerWins * factor) + 1;
+        points = match.withdraw === 'on' ? 1 : points;
         await addPoints(winner, points);
         await addPoints(loser, match.withdraw === 'on' ? 0 : 1);
     } else {
@@ -134,7 +140,9 @@ async function updatePoints(match, winner, loser) {
 }
 
 async function addPoints(player, points) {
-    console.log("PELAAJA: " + player + " PISTEET: " + points);
+    points += player.points;
+    console.log("PELAAJA: " + player.name + " PISTEET: " + points);
+    
     const data = {
         "points": points
     };

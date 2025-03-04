@@ -4,8 +4,8 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <label for="home">Koti:</label>
-                        <select id="selest" class="form-select">
+                        <label for="homeId">Koti:</label>
+                        <select class="form-select" name="home" id="homeId">
                             <option value="" disabled selected>Valitse...</option>
                             <% players?.forEach(function(c) { %>
                                 <option value='<%= c.id %>' <%= c.id === result?.expand.home?.id ? 'selected' : '' %>><%= c.name %></option>
@@ -16,8 +16,8 @@
                         <input  class="form-control" type="number" id="homeWins" name="homeWins" min="0" max="2" value="<%- result?.homeWins %>">
                     </div>
                     <div class="col-md-6">
-                        <label for="away">Vieras:</label>
-                        <select id="selest" class="form-select">
+                        <label for="awayId">Vieras:</label>
+                        <select class="form-select" name="away" id="awayId">
                             <option value="" disabled selected>Valitse...</option>
                             <% players?.forEach(function(c) { %>
                                 <option value='<%= c.id %>' <%= c.id === result?.expand.away?.id ? 'selected' : '' %>><%= c.name %></option>
@@ -31,8 +31,16 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
-                            <label for="details">Lisätiedot (max 255 merkkiä):</label>
-                            <input class="form-control" type="text" id="details" name="details" value="<%- result?.result %>">
+                            <label for="date">Päivämäärä:</label>
+                            <input class="form-control" type="date" id="date" name="date" value="<%- result?.date.substring(0,10) %>">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="result">Lisätiedot (max 255 merkkiä):</label>
+                            <input class="form-control" type="text" id="result" name="result" value="<%- result?.result %>">
                         </div>
                         <div class="form-group">
                             <label for="withdraw">Luovutus</label>
@@ -40,7 +48,7 @@
                         </div>
                         <div class="form-group">
                             <label for="open">Turnaus:</label>
-                            <select id="selest" name="openId" class="form-control">
+                            <select id="open" name="openId" class="form-control">
                                 <option value="" disabled selected>Valitse...</option>
                                 <%  let years = [2022, 2023, 2024, 2025, 2026];
                                 years.forEach(function(year) { %>
