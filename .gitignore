@@ -125,3 +125,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+.idea/jsLibraryMappings.xml
+.idea/vcs.xml
+.idea/inspectionProfiles/Project_Default.xml
+public/font-awesome/HELP-US-OUT.txt
