@@ -7,6 +7,7 @@ const session = require('express-session');
 const csrf = require('csurf');
 const passport = require('passport');
 const logger = require('morgan');
+const sqlite = require("better-sqlite3");
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
