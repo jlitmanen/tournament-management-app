@@ -1,0 +1,7 @@
+<% let player = name === 'home' ? match.expand.home : match.expand.away %>
+<select class="form-select" name="<% name %>" id="awayId">
+    <option value="" disabled selected>Valitse...</option>
+    <% players?.forEach(function(c) { %>
+        <option value='<%= c.id %>' <%= c.id === player.id ? 'selected' : '' %>><%= c.name %></option>
+    <% }) %>
+</select>

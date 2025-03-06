@@ -1,6 +1,8 @@
 <div class="container">
     <div class="row">
+        <h2>Muokkaa turnausta</h2>
         <div class="col">
+            <label for="selest"></label>
             <select class="form-select" id="selest" name="open" onchange="myFunction()">
                 <option value="" disabled selected>Valitse...</option>
                 <%  let years = [2022, 2023, 2024, 2025, 2026];
@@ -22,12 +24,12 @@
             <form action="/admin/opens/edit" method="post">
                 <input type="hidden" name="id" id="id" />
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                <input type="submit" value="Muokkaa tarkemmin"/>
+                <br />
+                <input type="submit" value="Muokkaa tarkemmin" />
             </form>
         </div>
         <div class="col">
             <form action="/admin/opens" method="post">
-                <h2>Muokkaa turnausta</h2>
                 <div class="form-group">
                     <label for="name">Nimi:  </label>
                     <input class="form-control" type="text" name="name" id="name" />

@@ -13,9 +13,13 @@ formatDate = function(d) {
                             <form role="form" action="/admin/open/match" method="post">
                                 <%- formatDate(match.date) %> <br />
                                 <div class="row">
-                                    <div class="col-md-6"><label><%- match.expand.home.name %></label><input class="form-control form-control-sm" type="number" value="<%- match.homeWins %>" title="home" name="homeWins" id="homeWins" />
+                                    <div class="col-md-6"><label>Koti</label>
+                                        <%- include('../partials/playerSelector.ejs',  {match: match, players: players, name: 'home'}) %>
+                                        <input class="form-control form-control-sm" type="number" value="<%- match.homeWins %>" title="home" name="homeWins" id="homeWins" />
                                     </div>
-                                    <div class="col-md-6"><label><%- match.expand.away.name %></label><input class="form-control form-control-sm" type="number" value="<%- match.awayWins %>" title="away" name="awayWins" id="awayWins" />
+                                    <div class="col-md-6"><label>Vieras</label>
+                                        <%- include('../partials/playerSelector.ejs',  {match: match, players: players, name: 'away'}) %>
+                                        <input class="form-control form-control-sm" type="number" value="<%- match.awayWins %>" title="away" name="awayWins" id="awayWins" />
                                     </div>
                                 </div>
 

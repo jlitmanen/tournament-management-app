@@ -129,3 +129,4 @@ dist
 .idea/vcs.xml
 .idea/inspectionProfiles/Project_Default.xml
 public/font-awesome/HELP-US-OUT.txt
+var/sessions.db

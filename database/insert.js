@@ -35,23 +35,44 @@ async function insertTournament(req, res, next) {
 };
 
 async function insertTournamentMatches(tournament) {
-    let players = [];
-    await fetchTopEight(function (data) {
-        players = data;
+    try {
+        let players = await new Promise((resolve) => {
+            fetchTopEight(resolve);
+        });
         console.log(players);
-    });
-    let matches = [];
-    // first stage 1-8 : 4-5 x 2-7 : 3-6
-    matches.push(await createMatch(players[0], players[6], tournament, 1).id);
-    matches.push(await createMatch(players[3], players[4], tournament, 1).id);
-    matches.push(await createMatch(players[1], players[6], tournament, 1).id);
-    matches.push(await createMatch(players[2], players[5], tournament, 1).id);
-    matches.push(await createMatch(null, null, tournament, 2).id);
-    matches.push(await createMatch(null, null, tournament, 2).id);
-    matches.push(await createMatch(null, null, tournament, 3).id);
 
-    tournament.field = matches;
-    await pb.collection('open').update(tournament.id, tournament)
+        let matches = [];
+        // first stage 1-8 : 4-5 x 2-7 : 3-6
+        const match1 = await createMatch(players[0], players[7], tournament, 1);
+        matches.push(match1.id);
+
+        const match2 = await createMatch(players[3], players[4], tournament, 1);
+        matches.push(match2.id);
+
+        const match3 = await createMatch(players[1], players[6], tournament, 1);
+        matches.push(match3.id);
+
+        const match4 = await createMatch(players[2], players[5], tournament, 1);
+        matches.push(match4.id);
+
+        // Myöhemmät vaiheet, pelaajat määritetään myöhemmin
+        const match5 = await createMatch(null, null, tournament, 2);
+        matches.push(match5.id);
+
+        const match6 = await createMatch(null, null, tournament, 2);
+        matches.push(match6.id);
+
+        const match7 = await createMatch(null, null, tournament, 3);
+        matches.push(match7.id);
+
+        tournament.field.push(matches);
+        await pb.collection('open').update(tournament.id, tournament);
+
+        console.log("Ottelut lisätty onnistuneesti.");
+    } catch (error) {
+        console.error("Virhe lisättäessä otteluita:", error);
+        // Voit lisätä tähän virheenkäsittelylogiikkaa, esim. palauttaa virheen tai näyttää viestin käyttäjälle.
+    }
 }
 
 async function fetchTopEight(callback) {
@@ -116,37 +137,10 @@ async function insertMatch (req, next) {
     };
 
     if (req.body.id === '') {
-        m = await pb.collection('match').create(data);
+        await pb.collection('match').create(data);
     } else {
-        m = await pb.collection('match').update(req.body.id, data);
+        await pb.collection('match').update(req.body.id, data);
     }
-
-    await updatePoints(m, winner, loser, modifier);
-}
-
-async function updatePoints(match, winner, loser, factor) {
-    let points;
-    if(match.openId === null || match.openId === '') {
-        const winnerWins = match.home === winner ? match.homeWins : match.awayWins;
-
-        points = (winnerWins * factor) + 1;
-        points = match.withdraw === 'on' ? 1 : points;
-        await addPoints(winner, points);
-        await addPoints(loser, match.withdraw === 'on' ? 0 : 1);
-    } else {
-        points = match.openRound === 3 ? 6 : 3;
-        await addPoints(winner, points);
-    }
-}
-
-async function addPoints(player, points) {
-    points += player.points;
-    console.log("PELAAJA: " + player.name + " PISTEET: " + points);
-    
-    const data = {
-        "points": points
-    };
-    await pb.collection('player').update(player.id, data);
 }
 
 async function groupModifier(winnerGroup, loserGroup) {

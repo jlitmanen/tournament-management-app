@@ -5,25 +5,13 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label for="homeId">Koti:</label>
-                        <select class="form-select" name="home" id="homeId">
-                            <option value="" disabled selected>Valitse...</option>
-                            <% players?.forEach(function(c) { %>
-                                <option value='<%= c.id %>' <%= c.id === result?.expand.home?.id ? 'selected' : '' %>><%= c.name %></option>
-                            <% }) %>
-                        </select>
-                        
+                        <%- include('../partials/playerSelector.ejs',  {match: result, players: players, name: 'home'}) %>
                         <label for="homeWins">Erävoitot, koti (0-2):</label>
                         <input  class="form-control" type="number" id="homeWins" name="homeWins" min="0" max="2" value="<%- result?.homeWins %>">
                     </div>
                     <div class="col-md-6">
                         <label for="awayId">Vieras:</label>
-                        <select class="form-select" name="away" id="awayId">
-                            <option value="" disabled selected>Valitse...</option>
-                            <% players?.forEach(function(c) { %>
-                                <option value='<%= c.id %>' <%= c.id === result?.expand.away?.id ? 'selected' : '' %>><%= c.name %></option>
-                            <% }) %>
-                        </select>
-                        
+                        <%- include('../partials/playerSelector.ejs',  {match: result, players: players, name: 'away'}) %>
                         <label for="awayWins">Erävoitot, vieras (0-2):</label>
                         <input class="form-control" type="number" id="awayWins" name="awayWins" min="0" max="2" value="<%- result?.awayWins %>">
                     </div>
