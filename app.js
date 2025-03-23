@@ -17,6 +17,12 @@ const db = new sqlite(process.env.RAILWAY_VOLUME_MOUNT_PATH + "/sessions.db");
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const adminRouter = require('./routes/admin');
+const openRouter = require('./routes/admin/open');
+const aboutRouter = require('./routes/admin/about');
+
+const matchRouter = require('./routes/admin/match');
+const rankingRouter = require('./routes/admin/ranking');
+
 
 const app = express();
 
@@ -72,6 +78,10 @@ app.use(function (req, res, next) {
 app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/admin', adminRouter);
+app.use('/admin', aboutRouter);
+app.use('/admin', matchRouter);
+app.use('/admin', openRouter);
+app.use('/admin', rankingRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

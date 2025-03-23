@@ -6,12 +6,13 @@
             <th>Ryhmä</th>
             <th>Pisteet</th>
         </tr>
+        <tbody class="table-group-divider">
         <% players?.forEach(function(c, i) { %>
-            <tbody>
+            
                 <tr onclick="showHideRow('<%= c.id %>');">
                     <td> <%= i + 1 %>.      </td>
                     <td> <%= c.name %>      </td>
-                    <td> <%= c.ryhma %>     </td>
+                    <td> <%= c.ryhma == 0 ? 'Ei sijoitettu' : c.ryhma %>     </td>
                     <td> <%= c.kokonaisPisteet %>    </td>
                 </tr>
                 <tr class="hidden_row" style="display: none;" id=<%- c.id %>>
@@ -19,8 +20,9 @@
                       Pelatut ottelut: <%= c.pelatutOttelut %>
                     </td>
                   </tr>
-            </tbody>
+            
         <% }) %>
+        </tbody>
     </table>
 </div>
 <script>

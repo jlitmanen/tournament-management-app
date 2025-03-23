@@ -3,20 +3,13 @@
         <div class="col">
             <div class="card">
                 <div class="card-body">
-                    <h3>Muokkaa</h3>
+                    <h3><%= player ? 'Muokkaa' : 'Luo pelaaja' %></h3>
                     <form action="/admin/ranking" method="post" class="form">
                         <div class="form-group">
                             <label for="name">Nimi:  </label>
                             <input class="form-control" type="text" name="name" id="name" value="<%= player?.name %>"/>
                         </div>
-                        <div class="form-group">
-                            <label for="group">Ryhmä: </label>
-                            <input class="form-control" type="number" name="group" id="group" value="<%= player?.group %>"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="points">Pisteet:  </label>
-                            <input class="form-control" type="number" name="points" id="points" value="<%= player?.points %>"/>
-                        </div>
+                        <br />
                         <input type="hidden" name="id" id="id" value="<%= player?.id %>"/>
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                         <button type="submit" class="btn btn-success btn-lg btn-block">Tallenna</button>

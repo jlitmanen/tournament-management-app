@@ -1,109 +1,91 @@
 <style>
-  .openbtn {
-    cursor: pointer;
-    color: white;
-    border: none;
-      padding: 5px 10px;
-  }
-  
-  .openbtn:hover {
-    background-color: #444;
-  }
-  
-  /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-  @media screen and (max-height: 450px) {
-    .sidebar {padding-top: 15px;}
-    .sidebar a {font-size: 18px;}
-  }
-  .hidden_row {
-            display: none;
-        }
+    .hidden_row {
+        display: none;
+    }
+    td {
+        white-space: nowrap;
+    }
 </style>
-<div id="main" class="table-responsive">
+<div class="container">
     <button class="openbtn" onclick="toggle()">☰ Search</button>
     <div id="mySidebar" style="display: none;">
-      <input
-            class="form-control mr-sm-2 filter" type="search" placeholder="Search for date"
-            id="yearInput" onkeyup="filterYear()" placeholder="Search for date.."  aria-label="Search for date">
+        <input  class="form-control mr-sm-2 filter" type="search" placeholder="Search for name"
+                id="nameInput"  placeholder="Etsi nimellä.."  aria-label="Search for date" value="<%= searchName || '' %>">
 
-      <input
-            class="form-control mr-sm-2 filter" type="search" placeholder="Search for name"
-            id="nameInput" onkeyup="filterName()" placeholder="Search for date.."  aria-label="Search for date">
-
-      <%
-      formatDate = function(d) {
-          return d.substring(8, 10) + "." + d.substring(5, 7) + "." + d.substring(0, 4);
-      }
-      %>
     </div>
     <table id="myTable" class="table table-dark table-bordered table-hover">
-      <tr>
+        <thead>
+        <tr>
             <th>Date</th>
             <th>Match</th>
             <th>Result</th>
         </tr>
-        <% results?.forEach(function(c) { %>
-          <% if(c.expand.home && c.expand.home) { %>
-            <tbody>
-                <tr onclick="showHideRow('<%= c.id %>');">
-                    <td> <%- formatDate(c.date) %> </td>
-                    <td> <%- c.expand.home?.name %> - <%- c.expand.away?.name %> </td>
-                    <td> <%- c.result %> </td>
+        </thead>
+        <tbody>
+        <% results.items?.forEach(function(c) { %>
+            <% if (c.expand?.home && c.expand?.away) { %>
+                <tr class="clickable-row" data-row-id="<%= c.id %>">
+                    <td><%= c.date %></td>
+                    <td><%= c.expand.home?.name %> - <%= c.expand.away?.name %></td>
+                    <td><%= c.result %></td>
                 </tr>
-                <tr class="hidden_row" id=<%- c.id %>>
-                  <td colspan="3">
-                    <%= c.details %>
-                  </td>
+                <tr class="hidden_row" id="<%= c.id %>">
+                    <td colspan="3"><%= c.details.replace(/[\n\r\t]/gm, "") %></td>
                 </tr>
-            </tbody>
             <% } %>
         <% }) %>
+        </tbody>
     </table>
+    <nav>
+        <% if (pages > 0) { %>
+            <ul class="pagination">
+                <% if (current == 1) { %>
+                    <li class="disabled"><a class="page-link">First</a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="/results/1?name=<%= searchName || '' %>">First</a></li>
+                <% } %>
+                <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+                <% if (i !== 1) { %>
+                    <li class="disabled"><a class="page-link">...</a></li>
+                <% } %>
+                <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                    <% if (i == current) { %>
+                        <li class="active"><a class="page-link"><%= i %></a></li>
+                    <% } else { %>
+                        <li class="page-item"><a class="page-link" href="/results/<%= i %>?name=<%= searchName || '' %>"><%= i %></a></li>
+                    <% } %>
+                    <% if (i == Number(current) + 4 && i < pages) { %>
+                        <li class="disabled"><a class="page-link">...</a></li>
+                    <% } %>
+                <% } %>
+                <% if (current == pages) { %>
+                    <li class="disabled"><a class="page-link">Last</a></li>
+                <% } else { %>
+                    <li><a class="page-link" href="/results/<%= pages %>?name=<%= searchName || '' %>">Last</a></li>
+                <% } %>
+            </ul>
+        <% } %>
+    </nav>
 </div>
+
 <script>
-  function showHideRow(row) {
-    $("#" + row).toggle();
-  }
-
-  function toggle() {
-    var ele = document.getElementById("mySidebar");
-    ele.style.display = ele.style.display == "block" ? "none" : "block";
-  }
-
-  function filterName() {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("nameInput");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("myTable");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[1];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
+    function toggle() {
+        var ele = document.getElementById("mySidebar");
+        ele.style.display = ele.style.display == "block" ? "none" : "block";
     }
-  }
-  function filterYear() {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("yearInput");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("myTable");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[0];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
-  }
+    $(document).ready(function() {
+
+        $('.clickable-row').click(function() {
+            const rowId = $(this).data('row-id');
+            $(`#${rowId}`).toggle();
+        });
+
+        $('#nameInput').on('input', function() {
+            const filter = $(this).val().trim().toUpperCase();
+            $('#myTable tbody tr').each(function() {
+                const matchName = $(this).find('td:eq(1)').text().trim().toUpperCase();
+                $(this).toggle(matchName.includes(filter));
+            });
+        });
+    });
 </script>

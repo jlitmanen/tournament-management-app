@@ -9,8 +9,8 @@
         <% players?.forEach(function(c) { %>
             <tr>
                 <td><%= c.name %></td>
-                <td><%= c.group %></td>
-                <td><%= c.points %></td>
+                <td><%= c.ryhma %></td>
+                <td><%= c.kokonaisPisteet %></td>
                 <td>
                     <form method="POST" action="/admin/ranking/edit">
                         <input type="hidden" name="id" id="id" value="<%= c.id %>"/>
