@@ -74,7 +74,6 @@
         ele.style.display = ele.style.display == "block" ? "none" : "block";
     }
     $(document).ready(function() {
-
         $('.clickable-row').click(function() {
             const rowId = $(this).data('row-id');
             $(`#${rowId}`).toggle();
