@@ -7,11 +7,15 @@
     }
 </style>
 <div class="container">
-    <button class="openbtn" onclick="toggle()">☰ Search</button>
-    <div id="mySidebar" style="display: none;">
-        <input  class="form-control mr-sm-2 filter" type="search" placeholder="Search for name"
-                id="nameInput"  placeholder="Etsi nimellä.."  aria-label="Search for date" value="<%= searchName || '' %>">
-
+    <div id="mySidebar" style="margin-bottom: 10px;">
+        <select id="playerSelect" class="form-control" onchange="playerFilter()">
+            <option value="">Kaikki pelaajat</option>
+            <% if (players) { %>
+                <% players.forEach(function(player) { %>
+                    <option value="<%= player.id %>" <% if (searchPid === player.id) { %> selected <% } %>><%= player.name %></option>
+                <% }); %>
+            <% } %>
+        </select>
     </div>
     <table id="myTable" class="table table-dark table-bordered table-hover">
         <thead>
@@ -42,7 +46,7 @@
                 <% if (current == 1) { %>
                     <li class="disabled"><a class="page-link">First</a></li>
                 <% } else { %>
-                    <li class="page-item"><a class="page-link" href="/results/1?name=<%= searchName || '' %>">First</a></li>
+                    <li class="page-item"><a class="page-link" href="/results/1?pid=<%= searchPid || '' %>">First</a></li>
                 <% } %>
                 <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
                 <% if (i !== 1) { %>
@@ -52,7 +56,7 @@
                     <% if (i == current) { %>
                         <li class="active"><a class="page-link"><%= i %></a></li>
                     <% } else { %>
-                        <li class="page-item"><a class="page-link" href="/results/<%= i %>?name=<%= searchName || '' %>"><%= i %></a></li>
+                        <li class="page-item"><a class="page-link" href="/results/<%= i %>?pid=<%= searchPid || '' %>"><%= i %></a></li>
                     <% } %>
                     <% if (i == Number(current) + 4 && i < pages) { %>
                         <li class="disabled"><a class="page-link">...</a></li>
@@ -61,7 +65,7 @@
                 <% if (current == pages) { %>
                     <li class="disabled"><a class="page-link">Last</a></li>
                 <% } else { %>
-                    <li><a class="page-link" href="/results/<%= pages %>?name=<%= searchName || '' %>">Last</a></li>
+                    <li><a class="page-link" href="/results/<%= pages %>?pid=<%= searchPid || '' %>">Last</a></li>
                 <% } %>
             </ul>
         <% } %>
@@ -69,22 +73,16 @@
 </div>
 
 <script>
-    function toggle() {
-        var ele = document.getElementById("mySidebar");
-        ele.style.display = ele.style.display == "block" ? "none" : "block";
-    }
     $(document).ready(function() {
         $('.clickable-row').click(function() {
             const rowId = $(this).data('row-id');
             $(`#${rowId}`).toggle();
         });
-
-        $('#nameInput').on('input', function() {
-            const filter = $(this).val().trim().toUpperCase();
-            $('#myTable tbody tr').each(function() {
-                const matchName = $(this).find('td:eq(1)').text().trim().toUpperCase();
-                $(this).toggle(matchName.includes(filter));
-            });
-        });
     });
+
+    function playerFilter() {
+        const selectedPlayerId = document.getElementById("playerSelect").value;
+        const url = `/results/1?pid=${selectedPlayerId}`;
+        window.location.href = url;
+    }
 </script>

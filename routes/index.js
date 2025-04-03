@@ -1,7 +1,7 @@
 const express = require('express');
 const ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
 const ensureLoggedIn = ensureLogIn();
-const { contents, tournaments, tournament, matches, ranking, quickmatchpaged } = require('../database/query.js');
+const { contents, tournaments, tournament, matches, ranking, players, quickmatchpaged } = require('../database/query.js');
 const router = express.Router();
 
 /* GET home page. */
@@ -17,16 +17,17 @@ router.get('/about', contents, (req, res) => {
   res.render('about', { content: res.locals.content });
 });
 
-router.get('/results/:page', quickmatchpaged, (req, res) => {
+router.get('/results/:page', quickmatchpaged, players, (req, res) => {
   const page = parseInt(req.params.page) || 1;
-  const searchName = req.query.name || ''; // Hae name query parametri
+  const pid = req.query.pid || ''; // Muutettu oletusarvo tyhjäksi merkkijonoksi
 
   try {
     res.render('results', {
       results: res.locals.matches,
+      players: res.locals.players,
       current: page,
       pages: res.locals.matches.totalPages,
-      searchName: searchName
+      searchPid: pid // Muutettu pid searchPid:ksi
     });
   } catch (error) {
     console.error("Virhe tulosten haussa:", error);

@@ -9,13 +9,19 @@ const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url)
 
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
-  const authData = await pb.collection('users').authWithPassword(
-    username,
-    password,
-  );
+  try {
+    const authData = await pb.collection('users').authWithPassword(
+      username,
+      password,
+    );
 
-  if(!pb.authStore.isValid) { return cb(err); }
-  return cb(null, authData);
+    if (!pb.authStore.isValid) {
+      return cb(new Error('Invalid username or password'));
+    }
+    return cb(null, authData);
+  } catch (error) {
+    return cb(error);
+  }
 }));
 
 passport.serializeUser(function(user, cb) {

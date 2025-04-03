@@ -28,17 +28,32 @@ async function quickmatch(req, res, next) {
   next();
 }
 
-async function quickmatchpaged(req, res, next) {
-  let page = req.params.page;
-  let matches = await client.collection('quickMatch').getList(page, 10, {
-    sort: '-truedate',
-    expand: 'home, away, openId',
-    filter: 'home.name ~ ' + req.query.name + " || " + 'away.name ~ ' + req.query.name
-  });
-  res.locals.count = matches.totalItems;
-  res.locals.matches = matches;
-  next();
-}
+const quickmatchpaged = async (req, res, next) => {
+  const page = parseInt(req.params.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+  const pid = req.query.pid || '';
+
+  try {
+    let filter = '';
+    if (pid) {
+      filter = `home.id = "${pid}" || away.id = "${pid}"`;
+    }
+
+
+    const matches = await client.collection('quickMatch').getList(page, limit, {
+      sort: '-truedate',
+      expand: 'home, away, openId',
+      filter: filter || 'id != null', // Käytetään undefined, jos suodatin on tyhjä
+    });
+
+    res.locals.matches = { items: matches.items, totalPages: matches.totalPages };
+    next();
+  } catch (error) {
+    console.error("Virhe otteluiden haussa:", error);
+    res.status(500).send("Otteluiden haku epäonnistui.");
+  }
+};
 
 async function match(req, res, next) {
   res.locals.result = await client.collection('match').getOne(req.body.id, {
@@ -49,7 +64,8 @@ async function match(req, res, next) {
 
 async function matches(req, res, next) {
   res.locals.results = await client.collection('match').getFullList({
-    expand: 'home, away, openId'
+    expand: 'home, away, openId',
+    sort: 'date'
   });
   next();
 }
@@ -60,6 +76,11 @@ async function matches(req, res, next) {
 
 async function player(req, res, next) {
   res.locals.player = await client.collection('player').getOne(req.body.id, {});
+  next();
+}
+
+async function players(req, res, next) {
+  res.locals.players = await client.collection('player').getFullList({});
   next();
 }
   
@@ -82,4 +103,4 @@ async function tournament(req, res, next) {
   next();
 }
 
-module.exports = { contents, tournaments, tournament, quickmatch, ranking, quickmatchpaged, matches, match, player, content }
+module.exports = { contents, tournaments, tournament, quickmatch, ranking, quickmatchpaged, matches, match, player, players, content }

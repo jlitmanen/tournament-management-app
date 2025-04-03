@@ -17,24 +17,46 @@ async function insertTournament(req, res, next) {
 
 async function insertTournamentMatches(tournament) {
     try {
-        const players = await pb.collection('ranking').getList(1, 8, {});
+        const players = await pb.collection('points').getList(1, 8, {});
+
+        if (!players || !players.items || players.items.length < 8) {
+            console.error("Virhe: Tarvittava määrä pelaajia ei löytynyt.");
+            return; // Lopetetaan suoritus, jos pelaajia ei ole tarpeeksi
+        }
+
         const matches = [];
 
         const createAndPushMatch = async (home, away, round) => {
-            const match = await pb.collection('match').create({
-                home: home?.id, away: away?.id, homeWins: 0, awayWins: 0, result: "",
-                date: null, reported: false, played: false, withdraw: false,
-                openRound: round, openId: tournament.id, factor: 1
-            });
+            const matchData = {
+                home: home,
+                away: away,
+                homeWins: 0,
+                awayWins: 0,
+                result: "",
+                date: null,
+                reported: false,
+                played: false,
+                withdraw: false,
+                openRound: round,
+                openId: tournament.id,
+                factor: 1
+            };
+
+            const match = await pb.collection('match').create(matchData);
             matches.push(match.id);
         };
 
-        await createAndPushMatch(players.items[0], players.items[7], 1);
-        await createAndPushMatch(players.items[3], players.items[4], 1);
-        await createAndPushMatch(players.items[1], players.items[6], 1);
-        await createAndPushMatch(players.items[2], players.items[5], 1);
+        // Ensimmäinen kierros
+        await createAndPushMatch(players.items[0].id, players.items[7].id, 1);
+        await createAndPushMatch(players.items[3].id, players.items[4].id, 1);
+        await createAndPushMatch(players.items[1].id, players.items[6].id, 1);
+        await createAndPushMatch(players.items[2].id, players.items[5].id, 1);
+
+        // Toinen kierros (paikat täytetään myöhemmin)
         await createAndPushMatch(null, null, 2);
         await createAndPushMatch(null, null, 2);
+
+        // Kolmas kierros (paikka täytetään myöhemmin)
         await createAndPushMatch(null, null, 3);
 
         await pb.collection('open').update(tournament.id, { field: matches });

@@ -1,16 +1,20 @@
-<% winner =  match.homeWins > match.awayWins ? 'winner-top' : 'winner-bottom'%>
-<div class="match">
-    <div>
-        <div class="input-group">
-            <input type="text" disabled class="form-control" value="<%= match.expand.home?.name %>">
-            <span class="input-group-text"><%= match.homeWins %></span>
-        </div>
-    </div>
-    <div>
-        <div class="input-group">
-            <input type="text" disabled class="form-control" value="<%= match.expand.away?.name %>">
-            <span class="input-group-text"><%= match.awayWins %></span>
-        </div>
-    </div>
+<%
+  let homeName = match.expand?.home?.name || "N/A";
+  let awayName = match.expand?.away?.name || "N/A";
+  let winner = match.homeWins > match.awayWins ? 'winner-top' : 'winner-bottom';
+%>
 
+<div class="match">
+  <div>
+    <div class="input-group">
+      <input type="text" disabled class="form-control" value="<%= homeName %>">
+      <span class="input-group-text"><%= match.homeWins %></span>
+    </div>
+  </div>
+  <div>
+    <div class="input-group">
+      <input type="text" disabled class="form-control" value="<%= awayName %>">
+      <span class="input-group-text"><%= match.awayWins %></span>
+    </div>
+  </div>
 </div>
