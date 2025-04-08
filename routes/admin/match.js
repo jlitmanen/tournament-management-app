@@ -8,17 +8,17 @@ const { insertMatch } = require("../../database/insert");
 
 router.get('/results', ensureLoggedIn, matches, (req, res) => {
     res.locals.filter = null;
-    res.render('admin/match/results', { results: res.locals.results, layout: 'layouts/main' });
+    res.render('admin/match/results', { results: res.locals.results });
 });
 
 router.post('/result/edit', ensureLoggedIn, match, ranking, tournaments, (req, res) => {
     res.locals.filter = null;
-    res.render('admin/match/editmatch', { result: res.locals.result, player: res.locals.players, opens: res.locals.opens, layout: 'layouts/main' });
+    res.render('admin/match/editmatch', { result: res.locals.result, player: res.locals.players, opens: res.locals.opens });
 });
 
 router.post('/result/add', ensureLoggedIn, ranking, tournaments, (req, res) => {
     res.locals.filter = null;
-    res.render('admin/match/editmatch', { result: null, player: res.locals.players, opens: res.locals.opens, layout: 'layouts/main' });
+    res.render('admin/match/editmatch', { result: null, player: res.locals.players, opens: res.locals.opens });
 });
 
 router.post('/result', ensureLoggedIn, async (req, res) => {

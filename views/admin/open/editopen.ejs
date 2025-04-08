@@ -16,11 +16,11 @@ formatDate = function(d) {
                                 <div class="row">
                                     <div class="col-md-6"><label>Koti</label>
                                         <%- include('../../partials/playerSelector.ejs',  {match: match, players: players, name: 'home'}) %>
-                                        <input class="form-control form-control-sm" type="number" value="<%- match.homeWins %>" title="home" name="homeWins" id="homeWins" />
+                                        <input class="form-control form-control-sm" type="number" value="<%- match.homeWins != null ? match.homeWins : 0 %>" title="home" name="homeWins" id="homeWins" />
                                     </div>
                                     <div class="col-md-6"><label>Vieras</label>
                                         <%- include('../../partials/playerSelector.ejs',  {match: match, players: players, name: 'away'}) %>
-                                        <input class="form-control form-control-sm" type="number" value="<%- match.awayWins %>" title="away" name="awayWins" id="awayWins" />
+                                        <input class="form-control form-control-sm" type="number" value="<%- match.awayWins != null ? match.awayWins : 0 %>" title="away" name="awayWins" id="awayWins" />
                                     </div>
                                 </div>
 

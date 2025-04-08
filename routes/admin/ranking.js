@@ -7,7 +7,7 @@ const { ranking, player } = require("../../database/query");
 const { insertPlayer } = require("../../database/insert");
 
 router.get('/ranking', ensureLoggedIn, ranking, (req, res) => {
-    res.render('admin/ranking/ranking', { players: res.locals.players, layout: 'layouts/main' });
+    res.render('admin/ranking/ranking', { players: res.locals.players });
 });
 
 router.post('/ranking/edit', ensureLoggedIn, player, (req, res) => {
@@ -15,7 +15,7 @@ router.post('/ranking/edit', ensureLoggedIn, player, (req, res) => {
 });
 
 router.post('/ranking/add', ensureLoggedIn, (req, res) => {
-    res.render('admin/ranking/editplayer', { player: null, layout: 'layouts/main' });
+    res.render('admin/ranking/editplayer', { player: null });
 });
 
 router.post('/ranking', ensureLoggedIn, async (req, res) => {

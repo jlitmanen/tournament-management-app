@@ -107,3 +107,14 @@ img {
  .match .team:first-child {
 	 margin-bottom: -1px;
 }
+
+.sidebar-fixed {
+  position: fixed;
+  width: 250px; /* Adjust the width as needed */
+  overflow-y: auto; /* Enable scrolling within the sidebar if content overflows */
+  /* Add any other desired styling (background color, borders, etc.) */
+}
+
+.main-content-shifted {
+  margin-left: 250px; /* Adjust to match sidebar width */
+}

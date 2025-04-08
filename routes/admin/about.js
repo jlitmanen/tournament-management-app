@@ -14,12 +14,12 @@ router.get('/about', ensureLoggedIn, contents, (req, res) => {
 
 router.post('/about/edit', ensureLoggedIn, content, (req, res) => {
     res.locals.filter = null;
-    res.render('admin/content/editcontent', { content: res.locals.content, layout: 'layouts/main' });
+    res.render('admin/content/editcontent', { content: res.locals.content });
 });
 
 router.post('/about/add', ensureLoggedIn, (req, res) => {
     res.locals.filter = null;
-    res.render('admin/content/editcontent', { content: null, layout: 'layouts/main' });
+    res.render('admin/content/editcontent', { content: null });
 });
 
 router.post('/about', ensureLoggedIn, async (req, res) => {

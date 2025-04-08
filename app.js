@@ -4,7 +4,7 @@ const expressLayouts = require('express-ejs-layouts')
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const csrf = require('csurf');
+const lusca = require('lusca');
 const passport = require('passport');
 const logger = require('morgan');
 const sqlite = require("better-sqlite3");
@@ -56,7 +56,7 @@ app.use(session({
   secret: process.env.COOKIE_SECRET
 }));
 
-app.use(csrf());
+app.use(lusca.csrf());
 app.use(passport.authenticate('session'));
 app.use(function(req, res, next) {
   const msgs = req.session.messages || [];

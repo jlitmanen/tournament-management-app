@@ -1,13 +1,16 @@
 <%
     let player;
-    if (match) {
-        player = name === 'home' ? match.expand?.home : match.expand?.away
+    if (match && match.expand) {
+        if (name === 'home' && match.expand.home) {
+            player = match.expand.home;
+        } else if (name === 'away' && match.expand.away) {
+            player = match.expand.away;
+        }
     }
 %>
 <select class="form-select" name="<% name %>" id="<% name %>">
-    <option value="" disabled>Valitse...</option>
+    <option value="" disabled selected>Valitse...</option>
     <% players?.forEach(function(c) { %>
-
-        <option value='<%= c.id %>' <%= c.id === player.id ? "selected" : '' %>><%= c.name %></option>
+        <option value='<%= c?.id %>' <%= player?.id != null && c?.id === player?.id ? "selected" : '' %>><%= c.name %></option>
     <% }) %>
 </select>

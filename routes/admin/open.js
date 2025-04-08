@@ -8,12 +8,12 @@ const { insertTournament, insertMatch } = require("../../database/insert");
 
 router.get('/opens', ensureLoggedIn, tournaments, (req, res) => {
     res.locals.filter = null;
-    res.render('admin/open/opens', { opens: res.locals.opens, layout: 'layouts/main' });
+    res.render('admin/open/opens', { opens: res.locals.opens });
 });
 
 router.post('/opens/edit', ensureLoggedIn, tournament, ranking, (req, res) => {
     res.locals.filter = null;
-    res.render('admin/open/editopen', { open: res.locals.open, players: res.locals.players, layout: 'layouts/main' });
+    res.render('admin/open/editopen', { open: res.locals.open, players: res.locals.players });
 });
 
 router.post('/opens', ensureLoggedIn, async (req, res) => {
