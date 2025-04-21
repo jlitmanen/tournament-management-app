@@ -1,20 +1,21 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <div class="card" style="min-height: 25em;">
-                <div class="card-body">
-                    <nav class="navbar sticky-top navbar-collapse">
-                        <ul class="list-group list-group-flush" style="list-style: none;">
-                            <% content?.forEach(function(c, index) { %>
-                                <li class="nav-item tablinks" style="cursor: pointer" onclick="openCity(event, <%= index %>)"><%= c.title  %></li>
-                            <% }) %>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+            <nav class="navbar sticky-top navbar-collapse">
+                <ul class="list-group">
+                    <% content?.forEach(function(c, index) { %>
+                        <li 
+                            class="list-group-item" 
+                            style="cursor: pointer" 
+                            onclick="openTab(event, '<%= index %>')">
+                                <%= c.title  %>
+                        </li>
+                    <% }) %>
+                </ul>
+            </nav>
         </div>
         <div class="col">
-            <div class="card" style="min-height: 25em;">
+            <div class="card" style="min-height: 30em;">
                 <div class="card-body overflow-auto">
                     <% content?.forEach(function(c, index) { %>
                         <div id="<%= index %>" style="display: none" class="tabcontent">
@@ -29,17 +30,24 @@
 </div>
 
 <script>
-    function openCity(evt, cityName) {
-        let i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(cityName).style.display = "block";
-        evt.currentTarget.className += " active";
+function openTab(event, tabName) {
+    const tabContents = Array.from(document.getElementsByClassName("tabcontent"));
+    tabContents.forEach(content => {
+        content.style.display = "none";
+    });
+
+    const tabButtons = Array.from(document.getElementsByClassName("list-group-item"));
+    tabButtons.forEach(button => {
+        button.classList.remove("active");
+    });
+
+    const targetTab = document.getElementById(tabName);
+    if (targetTab) {
+        targetTab.style.display = "block";
     }
+
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add("active");
+    }
+}
 </script>
