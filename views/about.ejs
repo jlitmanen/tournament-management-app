@@ -28,26 +28,3 @@
         </div>
     </div>
 </div>
-
-<script>
-function openTab(event, tabName) {
-    const tabContents = Array.from(document.getElementsByClassName("tabcontent"));
-    tabContents.forEach(content => {
-        content.style.display = "none";
-    });
-
-    const tabButtons = Array.from(document.getElementsByClassName("list-group-item"));
-    tabButtons.forEach(button => {
-        button.classList.remove("active");
-    });
-
-    const targetTab = document.getElementById(tabName);
-    if (targetTab) {
-        targetTab.style.display = "block";
-    }
-
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add("active");
-    }
-}
-</script>

@@ -1,22 +1,18 @@
-<style>
-    .hidden_row {
-        display: none;
-    }
-    td {
-        white-space: nowrap;
-    }
-</style>
 <div class="container">
-    <div id="mySidebar" style="margin-bottom: 10px;">
-        <select id="playerSelect" class="form-control" onchange="playerFilter()">
-            <option value="">Kaikki pelaajat</option>
-            <% if (players) { %>
-                <% players.forEach(function(player) { %>
-                    <option value="<%= player.id %>" <% if (searchPid === player.id) { %> selected <% } %>><%= player.name %></option>
-                <% }); %>
-            <% } %>
-        </select>
-    </div>
+    <form id="playerFilterForm" action="/results/1" method="POST">
+        <div id="mySidebar" style="margin-bottom: 10px;">
+            <select id="playerSelect" name="selectedPid" class="form-control" onchange="document.getElementById('playerFilterForm').submit()">
+                <option value="">Kaikki pelaajat</option>
+                <% if (players) { %>
+                    <% players.forEach(function(player) { %>
+                        <option value="<%= player.id %>" <% if (searchPid === player.id) { %> selected <% } %>><%= player.name %></option>
+                    <% }); %>
+                <% } %>
+            </select>
+        </div>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="hidden" name="searchPid" value="<%= searchPid || '' %>">
+    </form>
     <table id="myTable" class="table table-dark table-hover">
         <thead>
         <tr>
@@ -41,48 +37,51 @@
         </tbody>
     </table>
     <nav>
-        <% if (pages > 0) { %>
-            <ul class="pagination nav-fill">
-                <% if (current == 1) { %>
-                    <li class="nav-item disabled"><a class="page-link">First</a></li>
+    <% if (pages > 0) { %>
+        <ul class="pagination">
+            <% if (current == 1) { %>
+                <li class="nav-item disabled"><a class="page-link">First</a></li>
+            <% } else { %>
+                <li class="nav-item page-item">
+                    <form action="/results/1" method="POST">
+                        <input type="hidden" name="searchPid" value="<%= searchPid || '' %>">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        <button type="submit" class="page-link">First</button>
+                    </form>
+                </li>
+            <% } %>
+            <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+            <% if (i !== 1) { %>
+                <li class="nav-item disabled"><a class="page-link">...</a></li>
+            <% } %>
+            <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                <% if (i == current) { %>
+                    <li class="nav-item active"><a class="page-link"><%= i %></a></li>
                 <% } else { %>
-                    <li class="nav-item page-item"><a class="page-link" href="/results/1?pid=<%= searchPid || '' %>">First</a></li>
+                    <li class="nav-item page-item">
+                        <form action="/results/<%= i %>" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                            <input type="hidden" name="searchPid" value="<%= searchPid || '' %>">
+                            <button type="submit" class="page-link"><%= i %></button>
+                        </form>
+                    </li>
                 <% } %>
-                <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
-                <% if (i !== 1) { %>
+                <% if (i == Number(current) + 4 && i < pages) { %>
                     <li class="nav-item disabled"><a class="page-link">...</a></li>
                 <% } %>
-                <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
-                    <% if (i == current) { %>
-                        <li class="nav-item active"><a class="page-link"><%= i %></a></li>
-                    <% } else { %>
-                        <li class="nav-item page-item"><a class="page-link" href="/results/<%= i %>?pid=<%= searchPid || '' %>"><%= i %></a></li>
-                    <% } %>
-                    <% if (i == Number(current) + 4 && i < pages) { %>
-                        <li class="nav-item disabled"><a class="page-link">...</a></li>
-                    <% } %>
-                <% } %>
-                <% if (current == pages) { %>
-                    <li class="nav-item disabled"><a class="page-link">Last</a></li>
-                <% } else { %>
-                    <li><a class="page-link" href="/results/<%= pages %>?pid=<%= searchPid || '' %>">Last</a></li>
-                <% } %>
-            </ul>
+            <% } %>
+            <% if (current == pages) { %>
+                <li class="nav-item disabled"><a class="page-link">Last</a></li>
+            <% } else { %>
+                <li class="nav-item page-item">
+                    <form action="/results/<%= pages %>" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        <input type="hidden" name="searchPid" value="<%= searchPid || '' %>">
+                        <button type="submit" class="page-link">Last</button>
+                    </form>
+                </li>
+            <% } %>
+        </ul>
         <% } %>
     </nav>
 </div>
-
-<script>
-    $(document).ready(function() {
-        $('.clickable-row').click(function() {
-            const rowId = $(this).data('row-id');
-            $(`#${rowId}`).toggle();
-        });
-    });
-
-    function playerFilter() {
-        const selectedPlayerId = document.getElementById("playerSelect").value;
-        const url = `/results/1?pid=${selectedPlayerId}`;
-        window.location.href = url;
-    }
-</script>

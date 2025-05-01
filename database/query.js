@@ -32,7 +32,9 @@ const quickmatchpaged = async (req, res, next) => {
   const page = parseInt(req.params.page) || 1;
   const limit = 10;
   const offset = (page - 1) * limit;
-  const pid = req.query.pid || '';
+  const pid = req.body.selectedPid || '';
+
+  console.log(pid);
 
   try {
     let filter = '';

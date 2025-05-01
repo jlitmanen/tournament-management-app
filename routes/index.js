@@ -19,7 +19,27 @@ router.get('/about', contents, (req, res) => {
 
 router.get('/results/:page', quickmatchpaged, players, (req, res) => {
   const page = parseInt(req.params.page) || 1;
-  const pid = req.query.pid || ''; // Muutettu oletusarvo tyhjäksi merkkijonoksi
+  const pid = req.body.selectedPid || ''; // Muutettu oletusarvo tyhjäksi merkkijonoksi
+
+
+
+  try {
+    res.render('results', {
+      results: res.locals.matches,
+      players: res.locals.players,
+      current: page,
+      pages: res.locals.matches.totalPages,
+      searchPid: pid // Muutettu pid searchPid:ksi
+    });
+  } catch (error) {
+    console.error("Virhe tulosten haussa:", error);
+    res.status(500).send("Tulosten haku epäonnistui.");
+  }
+});
+
+router.post('/results/:page', quickmatchpaged, players, (req, res) => {
+  const page = parseInt(req.params.page) || 1;
+  const pid = req.body.selectedPid || ''; // Muutettu oletusarvo tyhjäksi merkkijonoksi
 
   try {
     res.render('results', {
