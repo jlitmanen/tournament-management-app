@@ -97,7 +97,6 @@ async function insertPlayer(req) {
         // Voit lähettää virhevastauksen
     }
 }
-
 async function insertMatch(req) {
     const { id, home, away, homeWins, awayWins, date, reported, result, withdraw, played, openId } = req.body;
 
@@ -124,12 +123,88 @@ async function insertMatch(req) {
             factor: modifier
         };
 
-        await (id ? pb.collection('match').update(id, data) : pb.collection('match').create(data));
+        // Create or update the match
+        const matchRecord = await (id ? pb.collection('match').update(id, data) : pb.collection('match').create(data));
+
+        // --- New logic to update subsequent matches ---
+
+        // Fetch all matches for this open tournament, ordered correctly
+        const openMatches = await pb.collection('match').getFullList({
+            filter: 'openId="' + openId + '"',
+            expand: 'home, away',
+            sort: 'order' // Or '-order' depending on your desired sorting
+        });
+
+        // Find the index of the current match in the sorted list
+        const currentMatchIndex = openMatches.findIndex(match => match.id === matchRecord.id);
+
+        // Implement the update logic based on the index
+        // This is similar to the Java code, but using the openMatches array
+        if (getWinner(matchRecord) !== null) { // Only update subsequent matches if the current match has a winner
+          switch (currentMatchIndex) {
+            case 0: // If the current match is the first one
+              if (openMatches.length > 4 && openMatches[4].player1 === undefined) { // Check if match 4 exists and needs player1
+                await updateSubsequentMatch(openMatches[4].id, { player1: getWinner(matchRecord) });
+              }
+              break;
+            case 1: // If the current match is the second one
+              if (openMatches.length > 4 && openMatches[4].player2 === undefined) { // Check if match 4 exists and needs player2
+                await updateSubsequentMatch(openMatches[4].id, { player2: getWinner(matchRecord) });
+              }
+              break;
+            case 2: // If the current match is the third one
+              if (openMatches.length > 5 && openMatches[5].player1 === undefined) { // Check if match 5 exists and needs player1
+                await updateSubsequentMatch(openMatches[5].id, { player1: getWinner(matchRecord) });
+              }
+              break;
+            case 3: // If the current match is the fourth one
+              if (openMatches.length > 5 && openMatches[5].player2 === undefined) { // Check if match 5 exists and needs player2
+                await updateSubsequentMatch(openMatches[5].id, { player2: getWinner(matchRecord) });
+              }
+              break;
+            case 4: // If the current match is the fifth one
+              if (openMatches.length > 6 && openMatches[6].player1 === undefined) { // Check if match 6 exists and needs player1
+                await updateSubsequentMatch(openMatches[6].id, { player1: getWinner(matchRecord) });
+              }
+              break;
+            case 5: // If the current match is the sixth one
+              if (openMatches.length > 6 && openMatches[6].player2 === undefined) { // Check if match 6 exists and needs player2
+                await updateSubsequentMatch(openMatches[6].id, { player2: getWinner(matchRecord) });
+              }
+              break;
+            default:
+              break;
+          }
+        }
+
         // Voit lähettää onnistumisvastauksen
     } catch (error) {
         console.error("Virhe ottelun lisäyksessä/päivityksessä:", error);
         // Voit lähettää virhevastauksen
     }
 }
+
+// Helper function to update a subsequent match
+async function updateSubsequentMatch(matchId, data) {
+  try {
+    await pb.collection('match').update(matchId, data);
+    console.log("Subsequent match updated successfully:", matchId);
+  } catch (error) {
+    console.error("Error updating subsequent match:", error);
+    // Handle the error appropriately
+  }
+}
+
+// You'll also need the getWinner function here or imported
+async function getWinner(match) { 
+    if (match.homeWins > match.awayWins) {
+      return match.home;
+    } else if (match.awayWins > match.homeWins) {
+      return match.away;
+    } else {
+      return null;
+    }
+ }
+
 
 module.exports = { insertContent, insertPlayer, insertMatch, insertTournament };

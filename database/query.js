@@ -100,9 +100,40 @@ async function tournaments(req, res, next) {
 }
 
 async function tournament(req, res, next) {
-  res.locals.open = await client.collection('open').getOne(req.body.id, {expand: 'field'});
-  res.locals.openMatches = await client.collection('match').getFullList({filter: 'openId="' + req.body.id + '"', expand: 'home, away'});
-  next();
+  try {
+    res.locals.open = await client.collection('open').getOne(req.body.id, {expand: 'field'});
+
+    let openMatches = await client.collection('match').getFullList({
+      filter: 'openId="' + req.body.id + '"',
+      expand: 'home, away',
+      sort: 'order' // Assuming you want ascending order for the 'order' field
+    });
+
+    // Custom sorting logic for legacy support
+    openMatches.sort((a, b) => {
+      // If both have an order, sort by order
+      if (a.order !== undefined && b.order !== undefined) {
+        return a.order - b.order;
+      }
+      // If only a has an order, a comes first
+      if (a.order !== undefined) {
+        return -1;
+      }
+      // If only b has an order, b comes first
+      if (b.order !== undefined) {
+        return 1;
+      }
+      // If neither has an order, sort by created date (legacy)
+      return new Date(a.created) - new Date(b.created);
+    });
+
+    res.locals.openMatches = openMatches;
+    next();
+  } catch (error) {
+    console.error("Error fetching tournament data:", error);
+    res.status(500).send("Failed to fetch tournament data.");
+  }
 }
+
 
 module.exports = { contents, tournaments, tournament, quickmatch, ranking, quickmatchpaged, matches, match, player, players, content }
