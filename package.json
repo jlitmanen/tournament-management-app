@@ -1,6 +1,6 @@
 {
-  "name": "ktp_node_ejs",
-  "version": "0.0.1",
+  "name": "dennis",
+  "version": "0.1.1",
   "private": true,
   "description": "",
   "keywords": [
@@ -12,7 +12,7 @@
   "author": {
     "name": "Joonas Litmanen"
   },
-  "license": "Unlicense",
+  "license": "MIT",
   "scripts": {
     "start": "node --env-file=.env ./bin/www"
   },
