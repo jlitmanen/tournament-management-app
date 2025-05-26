@@ -1,18 +1,20 @@
-const PocketBase = require('pocketbase/cjs');
+const PocketBase = require("pocketbase/cjs");
 
 const url = process.env.POCKETBASE_URL;
-const client = new PocketBase(url)
+const client = new PocketBase(url);
 
 /**
  * fetch content / contents
  */
 async function content(req, res, next) {
-  res.locals.content = await client.collection('content').getOne(req.body.id, {});
+  res.locals.content = await client
+    .collection("content")
+    .getOne(req.body.id, {});
   next();
 }
 
 async function contents(req, res, next) {
-  res.locals.content = await client.collection('content').getFullList({});
+  res.locals.content = await client.collection("content").getFullList({});
   next();
 }
 
@@ -21,9 +23,9 @@ async function contents(req, res, next) {
  */
 
 async function quickmatch(req, res, next) {
-  res.locals.openMatches = await client.collection('quickMatch').getList(1, 7, {
+  res.locals.openMatches = await client.collection("quickMatch").getList(1, 7, {
     filter: 'openId="' + req.body.id + '"',
-    expand: 'home, away, openId'
+    expand: "home, away, openId",
   });
   next();
 }
@@ -32,24 +34,26 @@ const quickmatchpaged = async (req, res, next) => {
   const page = parseInt(req.params.page) || 1;
   const limit = 10;
   const offset = (page - 1) * limit;
-  const pid = req.body.selectedPid || '';
+  const pid = req.body.selectedPid || "";
 
   console.log(pid);
 
   try {
-    let filter = '';
+    let filter = "";
     if (pid) {
       filter = `home.id = "${pid}" || away.id = "${pid}"`;
     }
 
-
-    const matches = await client.collection('quickMatch').getList(page, limit, {
-      sort: '-truedate',
-      expand: 'home, away, openId',
-      filter: filter || 'id != null', // Käytetään undefined, jos suodatin on tyhjä
+    const matches = await client.collection("quickMatch").getList(page, limit, {
+      sort: "-truedate",
+      expand: "home, away, openId",
+      filter: filter || "id != null", // Käytetään undefined, jos suodatin on tyhjä
     });
 
-    res.locals.matches = { items: matches.items, totalPages: matches.totalPages };
+    res.locals.matches = {
+      items: matches.items,
+      totalPages: matches.totalPages,
+    };
     next();
   } catch (error) {
     console.error("Virhe otteluiden haussa:", error);
@@ -58,16 +62,16 @@ const quickmatchpaged = async (req, res, next) => {
 };
 
 async function match(req, res, next) {
-  res.locals.result = await client.collection('match').getOne(req.body.id, {
-    expand: 'home, away, openId'
+  res.locals.result = await client.collection("match").getOne(req.body.id, {
+    expand: "home, away, openId",
   });
   next();
 }
 
 async function matches(req, res, next) {
-  res.locals.results = await client.collection('match').getFullList({
-    expand: 'home, away, openId',
-    sort: 'date'
+  res.locals.results = await client.collection("match").getFullList({
+    expand: "home, away, openId",
+    sort: "date",
   });
   next();
 }
@@ -77,36 +81,42 @@ async function matches(req, res, next) {
  */
 
 async function player(req, res, next) {
-  res.locals.player = await client.collection('player').getOne(req.body.id, {});
+  res.locals.player = await client.collection("player").getOne(req.body.id, {});
   next();
 }
 
 async function players(req, res, next) {
-  res.locals.players = await client.collection('player').getFullList({});
+  res.locals.players = await client.collection("player").getFullList({});
   next();
 }
-  
+
 async function ranking(req, res, next) {
-  res.locals.players = await client.collection('points').getFullList({ expand: 'home, away '});
+  res.locals.players = await client
+    .collection("points")
+    .getFullList({ expand: "home, away " });
   next();
 }
 
 /**
-* fetch: open / opens
-*/
+ * fetch: open / opens
+ */
 async function tournaments(req, res, next) {
-  res.locals.opens = await client.collection('open').getFullList({sort: 'created',});
+  res.locals.opens = await client
+    .collection("open")
+    .getFullList({ sort: "created" });
   next();
 }
 
 async function tournament(req, res, next) {
   try {
-    res.locals.open = await client.collection('open').getOne(req.body.id, {expand: 'field'});
+    res.locals.open = await client.collection("open").getOne(req.body.id, {
+      expand: "matches, matches.home, matches.away",
+    });
 
-    let openMatches = await client.collection('match').getFullList({
+    let openMatches = await client.collection("match").getFullList({
       filter: 'openId="' + req.body.id + '"',
-      expand: 'home, away',
-      sort: 'order' // Assuming you want ascending order for the 'order' field
+      expand: "home, away",
+      sort: "order", // Assuming you want ascending order for the 'order' field
     });
 
     // Custom sorting logic for legacy support
@@ -135,5 +145,16 @@ async function tournament(req, res, next) {
   }
 }
 
-
-module.exports = { contents, tournaments, tournament, quickmatch, ranking, quickmatchpaged, matches, match, player, players, content }
+module.exports = {
+  contents,
+  tournaments,
+  tournament,
+  quickmatch,
+  ranking,
+  quickmatchpaged,
+  matches,
+  match,
+  player,
+  players,
+  content,
+};

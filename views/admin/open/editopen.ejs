@@ -9,7 +9,7 @@ formatDate = function(d) {
                 <ul class="list-group">
                     <li class="list-group-item"><%= open.name %></li>
                     <% if(open.expand) { %>
-                    <% open.expand?.field?.forEach(function (match){ %>
+                    <% open.expand?.matches?.forEach(function (match){ %>
                         <li class="list-group-item">
                             <form role="form" action="/admin/open/match" method="post">
                                 <%- formatDate(match.date) %> <br />
@@ -26,6 +26,7 @@ formatDate = function(d) {
 
                                 <label for="result">Lisätiedot</label><input class="form-control form-control-sm" type="text" value="<%- match.result %>" name="result" id="result" />
                                 <input type="hidden" name="id" value="<%- match.id %>" id="id" />
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                                 <button type="submit" class="btn btn-success btn-lg btn-block">Tallenna</button>
                                 <button type="button" class="btn btn-danger btn-lg btn-block" onclick="history.back()">Peruuta</button>
                             </form>
