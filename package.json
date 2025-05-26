@@ -12,7 +12,7 @@
   "author": {
     "name": "Joonas Litmanen"
   },
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "start": "node --env-file=.env ./bin/www"
   },
