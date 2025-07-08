@@ -12,7 +12,7 @@ const sqlite = require("better-sqlite3");
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
 const SqliteStore = require("better-sqlite3-session-store")(session);
-const db = new sqlite(process.env.RAILWAY_VOLUME_MOUNT_PATH + "/sessions.db");
+const db = new sqlite(process.env.VOLUME_MOUNT_PATH + "/sessions.db");
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
@@ -53,7 +53,7 @@ app.use(
     saveUninitialized: false,
     unset: "destroy",
     secret: process.env.COOKIE_SECRET,
-  }),
+  })
 );
 
 app.use(lusca.csrf());

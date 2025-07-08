@@ -21,8 +21,6 @@ router.get('/results/:page', quickmatchpaged, players, (req, res) => {
   const page = parseInt(req.params.page) || 1;
   const pid = req.body.selectedPid || ''; // Muutettu oletusarvo tyhjäksi merkkijonoksi
 
-
-
   try {
     res.render('results', {
       results: res.locals.matches,

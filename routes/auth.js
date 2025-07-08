@@ -6,7 +6,7 @@ const router = express.Router();
 const PocketBase = require('pocketbase/cjs');
 
 const url = process.env.POCKETBASE_URL;
-const pb = new PocketBase(url)
+const pb = new PocketBase(url);
 
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
   try {
