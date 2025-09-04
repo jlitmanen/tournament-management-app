@@ -7,12 +7,13 @@ const session = require("express-session");
 const lusca = require("lusca");
 const passport = require("passport");
 const logger = require("morgan");
-const sqlite = require("better-sqlite3");
+// const sqlite = require("better-sqlite3");
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
-const SqliteStore = require("better-sqlite3-session-store")(session);
-const db = new sqlite(process.env.VOLUME_MOUNT_PATH + "/sessions.db");
+// const SqliteStore = require("better-sqlite3-session-store")(session);
+const MemoryStore = require("memorystore")(session);
+// const db = new sqlite("/sessions.db");
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
@@ -42,6 +43,23 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
     cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+      checkPeriod: 86400000, // prune expired entries every 24h
+      expired: {
+        clear: true,
+        intervalMs: 900000, //ms = 15min
+      },
+    }),
+    resave: false,
+    secret: "keyboard cat",
+    saveUninitialized: false,
+    unset: "destroy",
+  }),
+);
+/*
+app.use(
+  session({
+    cookie: { maxAge: 86400000 },
     store: new SqliteStore({
       client: db,
       expired: {
@@ -55,7 +73,7 @@ app.use(
     secret: process.env.COOKIE_SECRET,
   })
 );
-
+*/
 app.use(lusca.csrf());
 app.use(passport.authenticate("session"));
 app.use(function (req, res, next) {

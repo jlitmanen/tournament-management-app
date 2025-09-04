@@ -1,160 +1,176 @@
-const PocketBase = require("pocketbase/cjs");
+import { run } from "./db.js";
 
-const url = process.env.POCKETBASE_URL;
-const client = new PocketBase(url);
-
-/**
- * fetch content / contents
- */
-async function content(req, res, next) {
-  res.locals.content = await client
-    .collection("content")
-    .getOne(req.body.id, {});
+export async function content(req, res, next) {
+  const { id } = req.body;
+  const rows = await run(`SELECT * FROM content WHERE id = ?`, [id]);
+  res.locals.content = rows[0] || null;
   next();
 }
 
-async function contents(req, res, next) {
-  res.locals.content = await client.collection("content").getFullList({});
+export async function contents(req, res, next) {
+  const rows = await run(`SELECT * FROM content`);
+  res.locals.content = rows; // array of all rows
   next();
 }
 
-/**
- * fetch quickmatch (view) / match (table, updatable)
- */
-
-async function quickmatch(req, res, next) {
-  res.locals.openMatches = await client.collection("quickMatch").getList(1, 7, {
-    filter: 'openId="' + req.body.id + '"',
-    expand: "home, away, openId",
-  });
+export async function quickmatch(req, res, next) {
+  const { id } = req.body; // openId we’re filtering on
+  const rows = await run(
+    `SELECT qm.*,
+            h.*,
+            a.*
+     FROM quickMatch AS qm
+     LEFT JOIN player AS h ON qm.home = h.id
+     LEFT JOIN player AS a ON qm.away = a.id
+     WHERE qm.tournament_id = ?`,
+    [id],
+  );
+  res.locals.openMatches = rows;
   next();
 }
 
-const quickmatchpaged = async (req, res, next) => {
+export async function quickmatchpaged(req, res, next) {
   const page = parseInt(req.params.page) || 1;
   const limit = 10;
   const offset = (page - 1) * limit;
   const pid = req.body.selectedPid || "";
 
-  console.log(pid);
+  let filterClause = "";
+  const params = [];
 
-  try {
-    let filter = "";
-    if (pid) {
-      filter = `home.id = "${pid}" || away.id = "${pid}"`;
-    }
-
-    const matches = await client.collection("quickMatch").getList(page, limit, {
-      sort: "-truedate",
-      expand: "home, away, openId",
-      filter: filter || "id != null", // Käytetään undefined, jos suodatin on tyhjä
-    });
-
-    res.locals.matches = {
-      items: matches.items,
-      totalPages: matches.totalPages,
-    };
-    next();
-  } catch (error) {
-    console.error("Virhe otteluiden haussa:", error);
-    res.status(500).send("Otteluiden haku epäonnistui.");
+  if (pid) {
+    filterClause = `WHERE qm.home = ? OR qm.away = ?`;
+    params.push(pid, pid);
   }
-};
 
-async function match(req, res, next) {
-  res.locals.result = await client.collection("match").getOne(req.body.id, {
-    expand: "home, away, openId",
-  });
+  const rows = await run(
+    `SELECT qm.*, h.*, a.*, h.name as homename, a.name as awayname
+     FROM quickMatch qm
+     LEFT JOIN player h ON qm.home = h.id
+     LEFT JOIN player a ON qm.away = a.id
+     ${filterClause}
+     ORDER BY qm.truedate DESC
+     LIMIT ? OFFSET ?`,
+    [...params, limit, offset],
+  );
+
+  // Turso does not return total pages automatically; you need a separate count query
+  const countRows = await run(
+    `SELECT COUNT(*) as cnt FROM quickMatch qm ${filterClause}`,
+    pid ? [pid, pid] : [],
+  );
+  const totalPages = Math.ceil(countRows[0].cnt / limit);
+
+  res.locals.matches = {
+    items: rows,
+    totalPages,
+  };
   next();
 }
 
-async function matches(req, res, next) {
-  res.locals.results = await client.collection("match").getFullList({
-    expand: "home, away, openId",
-    sort: "date",
-  });
+export async function match(req, res, next) {
+  const { id } = req.body;
+  const rows = await run(
+    `SELECT m.*, h.name as home, a.name as away, o.name as tournament, o.id as openId, m.game_date as date
+     FROM matches AS m
+     LEFT JOIN player AS h ON m.player1 = h.id
+     LEFT JOIN player AS a ON m.player2 = a.id
+     LEFT JOIN tournament   AS o ON m.tournament_id = o.id
+     WHERE m.id = ?`,
+    [id],
+  );
+  res.locals.result = rows[0] || null;
   next();
 }
 
-/**
- * fetch player / ranking ( from points-view )
- */
-
-async function player(req, res, next) {
-  res.locals.player = await client.collection("player").getOne(req.body.id, {});
+export async function matches(req, res, next) {
+  const rows = await run(
+    `SELECT m.*, h.name as home, a.name as away, o.name as tournament
+     FROM matches AS m
+     LEFT JOIN player AS h ON m.player1 = h.id
+     LEFT JOIN player AS a ON m.player2 = a.id
+     LEFT JOIN tournament   AS o ON m.tournament_id = o.id
+     ORDER BY m.date`,
+  );
+  res.locals.results = rows;
   next();
 }
 
-async function players(req, res, next) {
-  res.locals.players = await client.collection("player").getFullList({});
+export async function player(req, res, next) {
+  const { id } = req.body;
+  const rows = await run(`SELECT * FROM player WHERE id = ?`, [id]);
+  res.locals.player = rows[0] || null;
   next();
 }
 
-async function ranking(req, res, next) {
-  res.locals.players = await client
-    .collection("points")
-    .getFullList({ expand: "home, away " });
+export async function players(req, res, next) {
+  const rows = await run(`SELECT * FROM player`);
+  res.locals.players = rows;
   next();
 }
 
-/**
- * fetch: open / opens
- */
-async function tournaments(req, res, next) {
-  res.locals.opens = await client
-    .collection("open")
-    .getFullList({ sort: "created" });
+export async function ranking(req, res, next) {
+  const rows = await run(
+    `SELECT p.*, pl.name
+     FROM points AS p
+     LEFT JOIN player AS pl ON p.id = pl.id
+     ORDER BY p.kokonaisPisteet DESC`,
+  );
+  res.locals.players = rows;
   next();
 }
 
-async function tournament(req, res, next) {
-  try {
-    res.locals.open = await client.collection("open").getOne(req.body.id, {
-      expand: "matches, matches.home, matches.away",
-    });
+export async function tournaments(req, res, next) {
+  const rows = await run(`SELECT * FROM tournament ORDER BY id DESC`);
+  res.locals.opens = rows;
+  next();
+}
 
-    let openMatches = await client.collection("match").getFullList({
-      filter: 'openId="' + req.body.id + '"',
-      expand: "home, away",
-      sort: "order", // Assuming you want ascending order for the 'order' field
-    });
+export async function tournament(req, res, next) {
+  const { id } = req.body;
 
-    // Custom sorting logic for legacy support
-    openMatches.sort((a, b) => {
-      // If both have an order, sort by order
-      if (a.order !== undefined && b.order !== undefined) {
-        return a.order - b.order;
-      }
-      // If only a has an order, a comes first
-      if (a.order !== undefined) {
-        return -1;
-      }
-      // If only b has an order, b comes first
-      if (b.order !== undefined) {
-        return 1;
-      }
-      // If neither has an order, sort by created date (legacy)
-      return new Date(a.created) - new Date(b.created);
-    });
+  // Fetch the tournament (tournament) itself
+  const openRows = await run(`SELECT * FROM tournament WHERE id = ?`, [id]);
+  const open = openRows[0];
 
-    res.locals.openMatches = openMatches;
-    next();
-  } catch (error) {
-    console.error("Error fetching tournament data:", error);
-    res.status(500).send("Failed to fetch tournament data.");
+  if (!open) {
+    return res.status(404).send("Tournament not found");
   }
-}
 
-module.exports = {
-  contents,
-  tournaments,
-  tournament,
-  quickmatch,
-  ranking,
-  quickmatchpaged,
-  matches,
-  match,
-  player,
-  players,
-  content,
-};
+  // Fetch its matches (including home/away expansions)
+  const matchRows = await run(
+    `SELECT m.*, h.name AS homeName, a.name AS awayName
+     FROM matches AS m
+     LEFT JOIN player AS h ON m.player1 = h.id
+     LEFT JOIN player AS a ON m.player2 = a.id
+     WHERE m.tournament_id = ?
+     ORDER BY
+       m.id ASC`,
+    [id],
+  );
+
+  // Attach to locals
+  res.locals.open = open;
+  res.locals.openMatches = matchRows;
+  next();
+}
+export async function createMatch(req, res, next) {
+  const { openId, homeId, awayId, date } = req.body;
+
+  await transaction(async (tx) => {
+    // Insert the matches
+    await tx.execute(
+      `INSERT INTO matches (id, tournament_id, home_id, away_id, date)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [crypto.randomUUID(), openId, homeId, awayId, date],
+    );
+
+    // Example side‑effect: increment a counter on the tournament
+    await tx.execute(
+      `UPDATE open SET match_count = match_count + 1 WHERE id = ?`,
+      [openId],
+    );
+  });
+
+  res.status(201).send("matches created");
+}

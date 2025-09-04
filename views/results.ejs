@@ -23,14 +23,14 @@
         </thead>
         <tbody>
         <% results.items?.forEach(function(c) { %>
-            <% if (c.expand?.home && c.expand?.away) { %>
+            <% if (c.home && c.away) { %>
                 <tr class="clickable-row" data-row-id="<%= c.id %>">
                     <td><%= c.date %></td>
-                    <td><%= c.expand.home?.name %> - <%= c.expand.away?.name %></td>
+                    <td><%= c.homename %> - <%= c.awayname %></td>
                     <td><%= c.result %></td>
                 </tr>
                 <tr class="hidden_row" id="<%= c.id %>">
-                    <td colspan="3"><%= c.details.replace(/[\n\r\t]/gm, "") %></td>
+                    <td colspan="3"><%= c.result.replace(/[\n\r\t]/gm, "") %></td>
                 </tr>
             <% } %>
         <% }) %>

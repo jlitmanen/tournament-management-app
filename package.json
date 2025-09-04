@@ -6,8 +6,7 @@
   "keywords": [
     "example",
     "express",
-    "passport",
-    "pocketbase"
+    "passport"
   ],
   "author": {
     "name": "Joonas Litmanen"
@@ -17,13 +16,11 @@
     "start": "node --env-file=.env ./bin/www"
   },
   "engines": {
-    "node": "22.16.0"
+    "node": "24.7.0"
   },
   "dependencies": {
-    "better-sqlite3": "^11.8.1",
-    "better-sqlite3-session-store": "^0.1.0",
+    "@libsql/client": "^0.15.14",
     "connect-ensure-login": "^0.1.1",
-    "connect-sqlite3": "^0.9.13",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "~3.1.9",
@@ -32,6 +29,7 @@
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
     "lusca": "^1.7.0",
+    "memorystore": "^1.6.7",
     "morgan": "~1.9.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",

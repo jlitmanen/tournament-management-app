@@ -1,10 +1,10 @@
 <%
     let player;
-    if (match && match.expand) {
-        if (name === 'home' && match.expand.home) {
-            player = match.expand.home;
-        } else if (name === 'away' && match.expand.away) {
-            player = match.expand.away;
+    if (match && players) {
+        if (name === 'home') {
+            player = players.find(p => p.id === match.player1);
+        } else if (name === 'away') {
+            player = players.find(p => p.id === match.player2);
         }
     }
 %>

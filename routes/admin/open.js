@@ -16,6 +16,7 @@ router.post("/opens/edit", ensureLoggedIn, tournament, ranking, (req, res) => {
   res.render("admin/open/editopen", {
     open: res.locals.open,
     players: res.locals.players,
+    matches: res.locals.openMatches,
   });
 });
 
