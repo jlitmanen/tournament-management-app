@@ -14,10 +14,10 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node --env-file=.env ./bin/www",
-    "prod": "NODE_ENV=production node ./bin/www"
+    "prod": "node ./bin/www"
   },
   "engines": {
-    "node": "22.11.0"
+    "node": "22.x"
   },
   "dependencies": {
     "@libsql/client": "^0.15.14",
