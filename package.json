@@ -13,7 +13,8 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "start": "node --env-file=.env ./bin/www"
+    "start": "node --env-file=.env ./bin/www",
+    "prod": "NODE_ENV=production node ./bin/www"
   },
   "engines": {
     "node": "22.x"
