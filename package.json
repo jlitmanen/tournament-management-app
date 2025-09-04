@@ -17,7 +17,7 @@
     "prod": "NODE_ENV=production node ./bin/www"
   },
   "engines": {
-    "node": "22.x"
+    "node": "22.11.0"
   },
   "dependencies": {
     "@libsql/client": "^0.15.14",
