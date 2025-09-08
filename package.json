@@ -17,7 +17,7 @@
     "prod": "node ./bin/www"
   },
   "engines": {
-    "node": "24.x"
+    "node": "24.7.0"
   },
   "dependencies": {
     "@libsql/client": "^0.15.14",
