@@ -131,3 +131,4 @@ dist
 public/font-awesome/HELP-US-OUT.txt
 var/sessions.db
 *.db
+*.sql

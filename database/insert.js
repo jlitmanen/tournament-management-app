@@ -44,11 +44,11 @@ export async function insertTournament(req, res, next) {
   };
 
   const sqlInsert = `
-    INSERT INTO open (name, year, active, ended) VALUES (?, ?, ?, ?)
+    INSERT INTO tournament (name, year, active, ended) VALUES (?, ?, ?, ?)
     RETURNING id;
   `;
   const sqlUpdate = `
-    UPDATE open SET name = ?, year = ?, active = ?, ended = ? WHERE id = ?
+    UPDATE tournament SET name = ?, year = ?, active = ?, ended = ? WHERE id = ?
     RETURNING id;
   `;
 
@@ -169,7 +169,7 @@ export async function insertMatch(req, res) {
       if (id) {
         await tx.execute(
           `UPDATE match
-           SET home = ?, away = ?, homeWins = ?, awayWins = ?, date = ?, result = ?, openId = ?, reported = ?, withdraw = ?, played = ?, factor = ?
+           SET player1 = ?, player2 = ?, wins1 = ?, wins2 = ?, game_date = ?, result = ?, tournament_id = ?, reported = ?, withdraw = ?, played = ?, factor = ?
            WHERE id = ?`,
           [
             data.home,
@@ -189,7 +189,7 @@ export async function insertMatch(req, res) {
         return { id };
       } else {
         const result = await tx.execute(
-          `INSERT INTO match (home, away, homeWins, awayWins, date, result, openId, reported, withdraw, played, factor)
+          `INSERT INTO match (player1, player2, wins1, wins2, game_date, result, tournament_id, reported, withdraw, played, factor)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
            RETURNING id`,
           [

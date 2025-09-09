@@ -4,13 +4,13 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <label for="homeId">Koti:</label>
+                        <label for="home">Koti:</label>
                         <%- include('../../partials/playerSelector.ejs',  {match: result, players: players, name: 'home'}) %>
                         <label for="homeWins">Erävoitot, koti (0-2):</label>
                         <input  class="form-control" type="number" id="homeWins" name="homeWins" min="0" max="2" value="<%- result?.wins1 %>">
                     </div>
                     <div class="col-md-6">
-                        <label for="awayId">Vieras:</label>
+                        <label for="away">Vieras:</label>
                         <%- include('../../partials/playerSelector.ejs',  {match: result, players: players, name: 'away'}) %>
                         <label for="awayWins">Erävoitot, vieras (0-2):</label>
                         <input class="form-control" type="number" id="awayWins" name="awayWins" min="0" max="2" value="<%- result?.wins2 %>">
