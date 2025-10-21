@@ -7,13 +7,8 @@ const session = require("express-session");
 const lusca = require("lusca");
 const passport = require("passport");
 const logger = require("morgan");
-// const sqlite = require("better-sqlite3");
 
-// pass the session to the connect sqlite3 module
-// allowing it to inherit from session.Store
-// const SqliteStore = require("better-sqlite3-session-store")(session);
 const MemoryStore = require("memorystore")(session);
-// const db = new sqlite("/sessions.db");
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
@@ -56,24 +51,6 @@ app.use(
     unset: "destroy",
   }),
 );
-/*
-app.use(
-  session({
-    cookie: { maxAge: 86400000 },
-    store: new SqliteStore({
-      client: db,
-      expired: {
-        clear: true,
-        intervalMs: 900000, //ms = 15min
-      },
-    }),
-    resave: false,
-    saveUninitialized: false,
-    unset: "destroy",
-    secret: process.env.COOKIE_SECRET,
-  })
-);
-*/
 app.use(lusca.csrf());
 app.use(passport.authenticate("session"));
 app.use(function (req, res, next) {
@@ -101,12 +78,10 @@ app.use("/admin", matchRouter);
 app.use("/admin", openRouter);
 app.use("/admin", rankingRouter);
 
-// catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
