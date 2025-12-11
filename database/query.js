@@ -111,10 +111,8 @@ export async function players(req, res, next) {
 
 export async function ranking(req, res, next) {
   const rows = await run(
-    `SELECT p.*, pl.name
-     FROM points AS p
-     LEFT JOIN player AS pl ON p.id = pl.id
-     ORDER BY p.kokonaisPisteet DESC`,
+    `SELECT *
+     FROM ranking`,
   );
   res.locals.players = rows;
   next();
