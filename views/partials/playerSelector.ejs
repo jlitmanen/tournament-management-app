@@ -2,15 +2,21 @@
     let player;
     if (match && players) {
         if (name === 'home') {
-            player = players.find(p => p.id === match.player1);
+            player = players.find(p => p.name == match.home);
         } else if (name === 'away') {
-            player = players.find(p => p.id === match.player2);
+            player = players.find(p => p.name == match.away);
         }
     }
 %>
 <select class="form-select" name="<% name %>" id="<% name %>">
     <option value="" disabled selected>Valitse...</option>
     <% players?.forEach(function(c) { %>
-        <option value='<%= c?.id %>' <%= player?.id != null && c?.id === player?.id ? "selected" : '' %>><%= c.name %></option>
+    <% console.log(c.name) %>
+        <option 
+          value='<%= c?.id %>' 
+          <%= player?.id != null && c?.id == player?.id ? "selected" : '' %>
+        >
+            <%= c.name %>
+        </option>
     <% }) %>
 </select>

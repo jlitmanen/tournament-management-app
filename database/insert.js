@@ -18,11 +18,7 @@ export async function insertContent(req, res) {
     const rows = id
       ? await run(sqlUpdate, [title, text, id])
       : await run(sqlInsert, [title, text]);
-
-    res.status(200).send({
-      message: "Sisältö lisätty/päivitetty onnistuneesti.",
-      id: rows[0]?.id ?? null,
-    });
+      
   } catch (error) {
     console.error("Virhe sisällön lisäyksessä/päivityksessä:", error);
     res

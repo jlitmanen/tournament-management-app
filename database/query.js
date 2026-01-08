@@ -137,7 +137,7 @@ export async function tournament(req, res, next) {
 
   // Fetch its matches (including home/away expansions)
   const matchRows = await run(
-    `SELECT m.*, h.name AS homeName, a.name AS awayName
+    `SELECT m.*, h.name AS home, a.name AS away
      FROM matches AS m
      LEFT JOIN player AS h ON m.player1 = h.id
      LEFT JOIN player AS a ON m.player2 = a.id

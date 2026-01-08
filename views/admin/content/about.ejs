@@ -1,11 +1,11 @@
 <div>
-    <table class="table table-dark table-bordered table-hover table-responsive-sm">
+    <table class="table table-bordered table-hover table-responsive table-sm">
         <thead>
             <tr>
                 <th>Otsikko</th>
                 <th><form id="about" action="/admin/about/add" method="post">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                        <input type="submit" value="Add"/>
+                        <input type="submit" value="Add" class="btn btn-success" />
                     </form>
                 </th>
             </tr>
@@ -18,7 +18,7 @@
                         <form method="POST" action="/admin/about/edit">
                             <input type="hidden" name="id" id="id" value="<%= c.id %>"/>
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                            <input type="submit" value="Edit" class="edit">
+                            <input type="submit" value="Edit" class="btn btn-primary">
                         </form>
                     </td>
                 </tr>

@@ -1,0 +1,18 @@
+// public/scss/theme.scss
+
+// 1. Include functions/variables first
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/variables-dark"; // Required for dark mode!
+@import "../../node_modules/bootstrap/scss/maps";
+@import "../../node_modules/bootstrap/scss/mixins";
+@import "../../node_modules/bootstrap/scss/root";
+
+// 2. Include the rest of Bootstrap
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+// 3. Your custom overrides
+[data-bs-theme="dark"] {
+    --bs-body-bg: #121212;
+    --bs-body-color: #e0e0e0;
+}

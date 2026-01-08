@@ -1,21 +1,23 @@
-<div id="Player">
-    <table class="table table-dark table-bordered table-hover">
+<div id="Player" class="bd-code-snippet">
+    <table class="table table-sm  table-responsive table-bordered table-hover">
         <thead>
             <tr>
-                <th>Name</th><th>Group</th><th>Points</th><th><form method="post" action="/admin/ranking/add"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><input type="submit" value="Add" class="edit"></form></th>
+                <th>Name</th>
+                <th><form method="post" action="/admin/ranking/add">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <input type="submit" value="Add" class="btn btn-success"></form>
+                </th>
             </tr>
         </thead>
         <tbody>
         <% players?.forEach(function(c) { %>
             <tr>
                 <td><%= c.name %></td>
-                <td><%= c.ryhma %></td>
-                <td><%= c.kokonaisPisteet %></td>
                 <td>
                     <form method="POST" action="/admin/ranking/edit">
                         <input type="hidden" name="id" id="id" value="<%= c.id %>"/>
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                        <input type="submit" value="Edit" class="edit">
+                        <input type="submit" value="Edit" class="btn btn-primary">
                     </form>
                 </td>
             </tr>

@@ -22,12 +22,7 @@ router.post("/about/add", ensureLoggedIn, (req, res) => {
 });
 
 router.post("/about", ensureLoggedIn, async (req, res) => {
-  try {
     await insertContent(req, res);
-    res.redirect("/admin/content/about");
-  } catch (error) {
-    console.error("Virhe lisättäessä sisältöä:", error);
-    res.status(500).send("Sisällön lisäys epäonnistui.");
-  }
+    res.redirect("about");
 });
 module.exports = router;

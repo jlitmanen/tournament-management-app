@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md fixed-top bg-dark-subtle">
+<nav class="navbar fixed-top navbar-expand-md bg-dark-subtle">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">KTP - 2025</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,9 +11,7 @@
             <li class="nav-item"><a class="nav-link " href="/results/1">Matches</a></li>
             <li class="nav-item"><a class="nav-link " href="/open">Opens</a></li>
             <li class="nav-item"><a class="nav-link " href="/about">About</a></li>
-            <% if(!isAuthenticated ) { %>
-                <li class="nav-item"><a class="nav-link " href="/login">Login</a></li>
-            <% } else { %>
+            <% if( typeof isAuthenticated !== 'undefined' && isAuthenticated ) { %>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Admin tools</a>
         
@@ -27,6 +25,18 @@
                     </ul>
                 </li>
             <% } %>
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <button class="btn nav-link" id="theme-toggle" type="button">
+            <i id="theme-icon" class="fa fa-moon-o"></i> </button>
+          </li>
+
+          <% if( typeof isAuthenticated !== 'undefined' && !isAuthenticated ) { %>
+            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          <% } else { %>
+          
+          <% } %>
         </ul>
       </div>
     </div>

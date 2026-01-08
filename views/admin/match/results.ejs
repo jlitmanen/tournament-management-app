@@ -2,26 +2,31 @@
     <div class="container-table100">
         <div class="wrap-table100">
             <div class="table100">
-                <table class="table table-dark table-bordered table-hover">
+                <table class="table table-sm table-bordered table-hover table-responsive">
                     <thead>
                         <tr class="table100-head">
-                            <th>Home</th><th>Away</th><th>HW</th><th>AW</th><th title="Result">Result</th><th>Open</th><th><form method="post" action="/admin/result/add"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><input type="submit" value="Add" class="edit"></form></th>
+                          <th>Date</th><th>Home</th><th>Away</th><th>Res</th><th>Open</th>
+                          <th>
+                            <form method="post" action="/admin/result/add">
+                              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                              <input type="submit" value="Add" class="btn btn-success">
+                            </form>
+                          </th>
                         </tr>
                     </thead>
                     <tbody>
                         <% results.forEach(function(c) { %>
                             <tr>
                                 <form action="/admin/result/edit" method="post">
-                                    <td class="column1"><%= c?.home  %></td>
-                                    <td class="column2"><%= c?.away  %></td>
-                                    <td class="column3"><%- c?.wins1 %></td>
-                                    <td class="column4"><%- c?.wins2 %></td>
-                                    <td class="column5"><%- c?.result %></td>
-                                    <td class="column6"><%= c?.tournament %></td>
-                                    <td class="column7">
+                                    <td class="column1"><%= c?.date       %></td>
+                                    <td class="column2"><%= c?.home       %></td>
+                                    <td class="column3"><%= c?.away       %></td>
+                                    <td class="column4"><%- c?.wins1 %> - <%- c?.wins2 %></td>
+                                    <td class="column5"><%= c?.tournament %></td>
+                                    <td class="column6">
                                         <input type="hidden" name="id" id="id" value="<%= c?.id %>"/>
                                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                                        <input type="submit" value="Edit" class="edit" >
+                                        <input type="submit" value="Edit" class="btn btn-primary" >
                                     </td>
                                 </form>
                             </tr>

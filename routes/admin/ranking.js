@@ -3,10 +3,10 @@ const ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
 const ensureLoggedIn = ensureLogIn();
 const router = express.Router();
 
-const { ranking, player } = require("../../database/query");
+const { ranking, player, players } = require("../../database/query");
 const { insertPlayer } = require("../../database/insert");
 
-router.get('/ranking', ensureLoggedIn, ranking, (req, res) => {
+router.get('/ranking', ensureLoggedIn, players, (req, res) => {
     res.render('admin/ranking/ranking', { players: res.locals.players });
 });
 

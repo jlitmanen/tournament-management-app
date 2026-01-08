@@ -1,19 +1,17 @@
 <div class="container">
     <form id="playerFilterForm" action="/results/1" method="POST">
-        <div id="mySidebar" style="margin-bottom: 10px;">
             <select id="playerSelect" name="selectedPid" class="form-control" onchange="document.getElementById('playerFilterForm').submit()">
                 <option value="">Kaikki pelaajat</option>
                 <% if (players) { %>
                     <% players.forEach(function(player) { %>
-                        <option value="<%= player.id %>" <% if (searchPid === player.id) { %> selected <% } %>><%= player.name %></option>
+                        <option value="<%= player.id %>" <% if (searchPid == player.id) { %> selected <% } %>><%= player.name %></option>
                     <% }); %>
                 <% } %>
             </select>
-        </div>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <input type="hidden" name="searchPid" value="<%= searchPid || '' %>">
     </form>
-    <table id="myTable" class="table table-dark table-hover">
+    <table id="myTable" class="table table-sm table-hover table-responsive">
         <thead>
         <tr>
             <th>Date</th>
@@ -22,15 +20,15 @@
         </tr>
         </thead>
         <tbody>
-        <% results.items?.forEach(function(c) { %>
+        <% results?.forEach(function(c) { %>
             <% if (c.home && c.away) { %>
                 <tr class="clickable-row" data-row-id="<%= c.id %>">
                     <td><%= c.date %></td>
                     <td><%= c.homename %> - <%= c.awayname %></td>
-                    <td><%= c.result %></td>
+                    <td><%= c.res %></td>
                 </tr>
                 <tr class="hidden_row" id="<%= c.id %>">
-                    <td colspan="3"><%= c.result.replace(/[\n\r\t]/gm, "") %></td>
+                    <td colspan="3"> <span><%- c.result %></span> </td>
                 </tr>
             <% } %>
         <% }) %>
@@ -44,7 +42,7 @@
             <% } else { %>
                 <li class="nav-item page-item">
                     <form action="/results/1" method="POST">
-                        <input type="hidden" name="searchPid" value="<%= searchPid || '' %>">
+                        <input type="hidden" name="selectedPid" value="<%= searchPid || '' %>">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                         <button type="submit" class="page-link">First</button>
                     </form>
@@ -61,7 +59,7 @@
                     <li class="nav-item page-item">
                         <form action="/results/<%= i %>" method="POST">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                            <input type="hidden" name="searchPid" value="<%= searchPid || '' %>">
+                            <input type="hidden" name="selectedPid" value="<%= searchPid || '' %>">
                             <button type="submit" class="page-link"><%= i %></button>
                         </form>
                     </li>
@@ -76,7 +74,7 @@
                 <li class="nav-item page-item">
                     <form action="/results/<%= pages %>" method="POST">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                        <input type="hidden" name="searchPid" value="<%= searchPid || '' %>">
+                        <input type="hidden" name="selectedPid" value="<%= searchPid || '' %>">
                         <button type="submit" class="page-link">Last</button>
                     </form>
                 </li>

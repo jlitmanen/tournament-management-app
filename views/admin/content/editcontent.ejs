@@ -1,25 +1,68 @@
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <h3>Muokkaa</h3>
-                    <form action="/admin/about" method="post" class="form">
-                        <div class="form-group">
-                            <label for="name">Otsikko:  </label>
-                            <input class="form-control" type="text" name="title" id="title" value="<%= content?.title %>"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="group">Sisältö: </label>
-                            <textarea class="form-control" name="text" id="text" rows="15"><%- content?.text %></textarea>
-                        </div>
-                        <input type="hidden" name="id" id="id" value="<%= content?.id %>"/>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h3 class="mb-4">Muokkaa sisältöä</h3>
+                    
+                    <form action="/admin/about" method="post" id="editForm">
+                        <input type="hidden" name="id" value="<%= content?.id %>"/>
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                        <button type="submit" class="btn btn-success btn-lg btn-block">Tallenna</button>
-                        <button type="button" class="btn btn-danger btn-lg btn-block" onclick="history.back()">Peruuta</button>
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold">Otsikko</label>
+                            <input class="form-control form-control-lg" type="text" name="title" id="title" value="<%= content?.title %>" required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Sisältö</label>
+                            <input type="hidden" name="text" id="quill-html-input">
+                            
+                            <div id="editor-container" style="height: 400px; font-size: 1.1rem;">
+                                <%- content?.text %>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" onclick="history.back()">Peruuta</button>
+                            <button type="submit" class="btn btn-success px-5">Tallenna muutokset</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+<script>
+    // 1. Initialize Quill
+    var quill = new Quill('#editor-container', {
+        theme: 'snow',
+        placeholder: 'Kirjoita sisältö tähän...',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'clean']
+            ]
+        }
+    });
+
+    // 2. Handle Form Submission
+    const form = document.getElementById('editForm');
+    form.onsubmit = function(e) {
+        // Get the HTML content from the Quill editor
+        const html = quill.root.innerHTML;
+        
+        // Validation: Don't save if it's just an empty paragraph (Quill's default)
+        if (html === '<p><br></p>') {
+            document.getElementById('quill-html-input').value = "";
+        } else {
+            document.getElementById('quill-html-input').value = html;
+        }
+    };
+</script>

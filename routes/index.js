@@ -3,6 +3,8 @@ const ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
 const ensureLoggedIn = ensureLogIn();
 const { contents, tournaments, tournament, matches, ranking, players, quickmatchpaged } = require('../database/query.js');
 const router = express.Router();
+const { formatContent } = require("../public/js/utils");
+
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -14,16 +16,31 @@ router.get('/', (req, res) => {
 });
 
 router.get('/about', contents, (req, res) => {
-  res.render('about', { content: res.locals.content });
+    // Process each item
+    const sanitizedContent = res.locals.content.map(item => ({
+        ...item,
+        text: formatContent(item.text)
+    }));
+
+    res.render('about', { content: sanitizedContent });
 });
+
+//router.get('/about', contents, (req, res) => {
+//  res.render('about', { content: res.locals.content });
+//});
 
 router.get('/results/:page', quickmatchpaged, players, (req, res) => {
   const page = parseInt(req.params.page) || 1;
   const pid = req.body.selectedPid || ''; // Muutettu oletusarvo tyhjäksi merkkijonoksi
 
+    const sanitizedContent = res.locals.matches.items.map(item => ({
+      ...item,
+      text: formatContent(item.result)
+    }));
+
   try {
     res.render('results', {
-      results: res.locals.matches,
+      results: sanitizedContent,
       players: res.locals.players,
       current: page,
       pages: res.locals.matches.totalPages,
@@ -39,9 +56,15 @@ router.post('/results/:page', quickmatchpaged, players, (req, res) => {
   const page = parseInt(req.params.page) || 1;
   const pid = req.body.selectedPid || ''; // Muutettu oletusarvo tyhjäksi merkkijonoksi
 
+
+  const sanitizedContent = res.locals.matches.items.map(item => ({
+    ...item,
+    text: formatContent(item.result)
+  }));
+
   try {
     res.render('results', {
-      results: res.locals.matches,
+      results: sanitizedContent,
       players: res.locals.players,
       current: page,
       pages: res.locals.matches.totalPages,
@@ -63,7 +86,12 @@ router.get('/open', matches, tournaments, (req, res) => {
 
 router.post('/open', tournament, matches, tournaments, (req, res) => {
   // Tarkista, ohjaako tämä oikeaan paikkaan.
-  res.render('open', { open: res.locals.open, openMatches: res.locals.openMatches, opens: res.locals.opens });
+  // 
+    const sanitizedContent = res.locals.openMatches.map(item => ({
+      ...item,
+      text: formatContent(item.result)
+    }));
+  res.render('open', { open: res.locals.open, openMatches: sanitizedContent, opens: res.locals.opens });
 });
 
 module.exports = router;

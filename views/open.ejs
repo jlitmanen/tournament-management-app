@@ -1,9 +1,9 @@
 <%- include('./partials/openSelector.ejs', { opens: opens }) %>
 
 <% if (openMatches && openMatches && openMatches.length > 0) { %>
-	<div class="theme-light container align-content-start">
+	<div class="container align-content-start p-2">
 		<h1><%- open.name %> <%- open.year %></h1>
-		<div class="bracket row justify-content-between">
+  <div class="row justify-content-between p-2">
 		<%
           // Prepare an empty container for the three rounds we need
           const rounds = {
@@ -28,13 +28,13 @@
         %>
 
 			<% Object.keys(rounds).forEach(round => { %>
-				<div class="col">
+				<div class="col shadow-sm p-2">
 					<h2>
-						<% if (round == 1) { %>Ensimmäinen kierros<% }
-						else if (round == 2) { %>Toinen kierros<% }
+						<% if (round == 1) { %>1/4 Finaali<% }
+						else if (round == 2) { %>Semifinaali<% }
 						else if (round == 3) { %>Finaali<% } %>
 					</h2>
-					<div class="column">
+					<div class="col">
 						<% rounds[round].forEach(match => { %>
 							<%- include('./partials/match.ejs', { match: match }) %>
 						<% }); %>

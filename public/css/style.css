@@ -28,7 +28,7 @@ img {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 35%;
+  width: 55%;
   border-radius: 5%;
   height: auto;
 }
@@ -151,4 +151,25 @@ td {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+// Custom refinement for your tournament app
+.list-group-item.active {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    font-weight: 600;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    // Using a subtle shadow instead of heavy borders
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+}
+
+.tab-pane {
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 10px;
+    scrollbar-width: none;
 }

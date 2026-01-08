@@ -3,7 +3,7 @@ const ensureLogIn = require("connect-ensure-login").ensureLoggedIn;
 const ensureLoggedIn = ensureLogIn();
 const router = express.Router();
 
-const { tournaments, tournament, ranking } = require("../../database/query");
+const { tournaments, tournament, players } = require("../../database/query");
 const { insertTournament, insertMatch } = require("../../database/insert");
 
 router.get("/opens", ensureLoggedIn, tournaments, (req, res) => {
@@ -11,7 +11,7 @@ router.get("/opens", ensureLoggedIn, tournaments, (req, res) => {
   res.render("admin/open/opens", { opens: res.locals.opens });
 });
 
-router.post("/opens/edit", ensureLoggedIn, tournament, ranking, (req, res) => {
+router.post("/opens/edit", ensureLoggedIn, tournament, players, (req, res) => {
   res.locals.filter = null;
   res.render("admin/open/editopen", {
     open: res.locals.open,
