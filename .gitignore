@@ -132,3 +132,5 @@ public/font-awesome/HELP-US-OUT.txt
 var/sessions.db
 *.db
 *.sql
+./sessions.db
+./tournament-management-app.geany
