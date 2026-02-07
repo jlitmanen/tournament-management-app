@@ -24,7 +24,7 @@ const Ranking = () => {
         setPlayers(sorted);
         setError(null);
       } catch (err) {
-        setError("Haku epäonnistui.");
+        setError("Haku epäonnistui.", err);
       } finally {
         setLoading(false);
       }
@@ -74,11 +74,7 @@ const Ranking = () => {
                     <td
                       colSpan="3"
                       className="bg-light py-1 ps-3 border-top border-bottom"
-                    >
-                      <small className="fw-bold text-muted">
-                        Ryhmä {currentRyhma}
-                      </small>
-                    </td>
+                    ></td>
                   </tr>
                 )}
 

@@ -1,42 +1,18 @@
 {
-  "name": "dennis",
-  "version": "0.1.1",
-  "private": true,
-  "description": "",
-  "keywords": [
-    "example",
-    "express",
-    "passport"
-  ],
-  "author": {
-    "name": "Joonas Litmanen"
-  },
-  "license": "UNLICENSED",
+  "name": "tennis-api",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
-    "start": "node --env-file=.env ./bin/www",
-    "prod": "node ./bin/www"
-  },
-  "engines": {
-    "node": "22.16.0"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   },
   "dependencies": {
-    "@libsql/client": "^0.15.14",
-    "bootstrap": "^5.3.8",
-    "connect-ensure-login": "^0.1.1",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "ejs": "~3.1.9",
-    "express": "^4.18.2",
-    "express-ejs-layouts": "^2.5.1",
-    "express-session": "^1.17.2",
-    "http-errors": "~1.6.3",
-    "lusca": "^1.7.0",
-    "memorystore": "^1.6.7",
-    "morgan": "^1.10.1",
-    "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
-    "pluralize": "^8.0.0",
-    "pocketbase": "^0.21.2",
-    "sanitize-html": "^2.17.0"
+    "@libsql/client": "^0.14.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3"
   }
 }

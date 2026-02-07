@@ -3,92 +3,65 @@ const isDev = import.meta.env.DEV;
 
 /**
  * Generic fetch wrapper for API calls
- * Handles JSON parsing and error management with improved debugging
  */
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
 
-  if (isDev) {
-    console.log(`[API Request] ${options.method || "GET"} ${url}`, {
-      headers: options.headers,
-      body: options.body ? JSON.parse(options.body) : null,
-    });
-  }
+  // 1. Get the token from storage
+  const token = localStorage.getItem("token");
 
   const config = {
     ...options,
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      // 2. Automatically attach Authorization header if token exists
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   };
+
+  if (isDev) {
+    console.log(`[API Request] ${options.method || "GET"} ${url}`, {
+      headers: config.headers,
+      body: options.body ? JSON.parse(options.body) : null,
+    });
+  }
 
   let response;
   try {
     response = await fetch(url, config);
   } catch (error) {
-    if (isDev) console.error(`[API Network Error] ${url}`, error);
     throw new Error(`Verkkovirhe: ${error.message}`);
   }
 
-  if (isDev) {
-    console.log(`[API Response Status] ${response.status} ${url}`);
+  // 3. Handle 401 Unauthorized (Token expired or invalid)
+  if (response.status === 401) {
+    localStorage.removeItem("token");
+    // Optional: redirect to login if not already there
+    if (!window.location.pathname.includes("/login")) {
+      window.location.href = "/login";
+    }
+    throw new Error("Istunto vanhentunut. Kirjaudu sisään uudelleen.");
   }
 
-  // Handle 204 No Content
-  if (response.status === 204) {
-    return null;
-  }
+  if (response.status === 204) return null;
 
   const contentType = response.headers.get("content-type");
   let data;
 
-  // Check if response is actually JSON before parsing
   if (contentType && contentType.includes("application/json")) {
-    try {
-      data = await response.json();
-    } catch (error) {
-      if (isDev) {
-        console.error(`[API JSON Parse Error] ${url}`, error);
-      }
-      throw new Error("Palvelimen vastaus ei ollut kelvollista JSON-muotoa.");
-    }
+    data = await response.json();
   } else {
-    // Non-JSON response (could be an HTML error page from proxy/server)
     const text = await response.text();
-    if (isDev) {
-      console.warn(`[API Non-JSON Response] ${url}`, {
-        status: response.status,
-        preview: text.substring(0, 500),
-      });
-    }
-
-    if (!response.ok) {
-      throw new Error(
-        `Palvelinvirhe (${response.status}): Palvelin palautti muuta kuin JSON-dataa.`,
-      );
-    }
+    if (!response.ok) throw new Error(`Palvelinvirhe (${response.status})`);
     return text;
   }
 
-  // Handle error responses that ARE JSON
   if (!response.ok) {
     const errorMessage =
-      data?.message ||
-      data?.error ||
-      data?.details ||
-      `Pyyntö epäonnistui koodilla ${response.status}`;
-
-    if (isDev) {
-      console.error(`[API Error Data] ${url}`, data);
-    }
-
+      data?.message || data?.error || `Virhe: ${response.status}`;
     throw new Error(errorMessage);
-  }
-
-  if (isDev) {
-    console.log(`[API Success Data] ${url}`, data);
   }
 
   return data;
