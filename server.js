@@ -12,7 +12,9 @@ const db = createClient({
   authToken: process.env.TURSO_TOKEN,
 });
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "*"
+}));
 app.use(express.json());
 
 // --- LOGIN ROUTE ---q
@@ -115,25 +117,50 @@ app.delete("/api/players/:id", async (req, res) => {
   res.sendStatus(200);
 });
 
-// --- MATCH CRUD ---
+// --- MATCH CRUD (Updated with Player Filter) ---
 app.get("/api/results", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
+  const playerId = req.query.playerId; // Get playerId from query params
   const limit = 10;
   const offset = (page - 1) * limit;
-  const count = await db.execute("SELECT COUNT(*) as total FROM matches");
-  const rs = await db.execute({
-    sql: `SELECT m.*, p1.name as homename, p2.name as awayname, t.name as tournament_name
-          FROM matches m
-          LEFT JOIN player p1 ON m.player1 = p1.id
-          LEFT JOIN player p2 ON m.player2 = p2.id
-          LEFT JOIN tournament t ON m.tournament_id = t.id
-          ORDER BY m.game_date DESC LIMIT ? OFFSET ?`,
-    args: [limit, offset],
-  });
-  res.json({
-    items: rs.rows,
-    totalPages: Math.ceil(Number(count.rows[0].total) / limit),
-  });
+
+  try {
+    // 1. Build the dynamic WHERE clause
+    let whereClause = "";
+    let args = [];
+
+    if (playerId) {
+      whereClause = "WHERE (m.player1 = ? OR m.player2 = ?)";
+      args = [playerId, playerId];
+    }
+
+    // 2. Get total count for pagination (with filter)
+    const countRs = await db.execute({
+      sql: `SELECT COUNT(*) as total FROM matches m ${whereClause}`,
+      args: args
+    });
+
+    // 3. Get matches (with filter)
+    const matchesArgs = [...args, limit, offset];
+    const rs = await db.execute({
+      sql: `SELECT m.*, p1.name as homename, p2.name as awayname, t.name as tournament_name
+            FROM matches m
+            LEFT JOIN player p1 ON m.player1 = p1.id
+            LEFT JOIN player p2 ON m.player2 = p2.id
+            LEFT JOIN tournament t ON m.tournament_id = t.id
+            ${whereClause}
+            ORDER BY m.game_date DESC LIMIT ? OFFSET ?`,
+      args: matchesArgs,
+    });
+
+    res.json({
+      items: rs.rows,
+      totalPages: Math.ceil(Number(countRs.rows[0].total) / limit),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Virhe tulosten haussa" });
+  }
 });
 
 app.post("/api/matches", async (req, res) => {
@@ -166,7 +193,7 @@ app.put("/api/matches/:id", async (req, res) => {
       wins2,
       game_date,
       result,
-      tournament_id || null,
+      tournament_id || null,""
       req.params.id,
     ],
   });
