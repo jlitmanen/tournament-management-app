@@ -1,0 +1,103 @@
+:root {
+    --primary-color: #0d6efd;
+    --bg-subtle: rgba(0, 0, 0, 0.03);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Navbar adjustments */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bg-dark-subtle {
+    background-color: var(--bs-tertiary-bg) !important;
+}
+
+/* Layout container spacing */
+main.container-fluid {
+    flex: 1;
+}
+
+/* Match bracket styles */
+.match {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100px;
+    position: relative;
+}
+
+.match .input-group-text {
+    min-width: 40px;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Table interactions */
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.expanded-row td {
+    padding: 1rem !important;
+    border-left: 4px solid var(--bs-primary);
+}
+
+/* Theme toggle icon styling */
+#theme-toggle {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+}
+
+/* Responsive adjustments for the bracket */
+@media (max-width: 768px) {
+    .col.shadow-sm.p-2.mx-1 {
+        margin-bottom: 2rem;
+        min-width: 100%;
+    }
+}
+
+/* Custom card and shadow effects */
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+/* Animation for expanded rows */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Helper classes for text and icons */
+.fa-moon-o,
+.fa-sun-o {
+    margin-right: 5px;
+}
+
+/* Ensure images don't overflow */
+img {
+    max-width: 100%;
+    height: auto;
+}

@@ -15,6 +15,7 @@ const authRouter = require("./routes/auth");
 const adminRouter = require("./routes/admin");
 const openRouter = require("./routes/admin/open");
 const aboutRouter = require("./routes/admin/about");
+const apiRouter = require("./routes/api");
 
 const matchRouter = require("./routes/admin/match");
 const rankingRouter = require("./routes/admin/ranking");
@@ -51,7 +52,16 @@ app.use(
     unset: "destroy",
   }),
 );
-app.use(lusca.csrf());
+app.use(function (req, res, next) {
+  if (
+    req.path.startsWith("/api") ||
+    req.path === "/login" ||
+    req.path === "/logout"
+  ) {
+    return next();
+  }
+  lusca.csrf()(req, res, next);
+});
 app.use(passport.authenticate("session"));
 app.use(function (req, res, next) {
   const msgs = req.session.messages || [];
@@ -61,13 +71,43 @@ app.use(function (req, res, next) {
   next();
 });
 app.use(function (req, res, next) {
-  res.locals.csrfToken = req.csrfToken();
+  res.locals.csrfToken =
+    typeof req.csrfToken === "function" ? req.csrfToken() : "";
   next();
 });
 
 app.use(function (req, res, next) {
   res.locals.isAuthenticated = req.isAuthenticated();
   next();
+});
+
+app.post("/login", function (req, res, next) {
+  passport.authenticate("local", function (err, user, info) {
+    if (err) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+    req.logIn(user, function (err) {
+      if (err) {
+        return res.status(500).json({ error: "Login failed" });
+      }
+      return res.json({
+        isAuthenticated: true,
+        user: { id: user.id, username: user.username },
+      });
+    });
+  })(req, res, next);
+});
+
+app.post("/logout", function (req, res, next) {
+  req.logout(function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Logout failed" });
+    }
+    res.json({ isAuthenticated: false });
+  });
 });
 
 app.use("/", indexRouter);
@@ -77,6 +117,7 @@ app.use("/admin", aboutRouter);
 app.use("/admin", matchRouter);
 app.use("/admin", openRouter);
 app.use("/admin", rankingRouter);
+app.use("/api", apiRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));

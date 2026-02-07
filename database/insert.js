@@ -1,9 +1,10 @@
-// handlers.js
-import { run, transaction } from "./db.js";
+const { run, transaction } = require("./db.js");
+const { getPlayerById } = require("./query.js");
+
 /* -------------------------------------------------
    1️⃣ Content (create / update)
 ---------------------------------------------------*/
-export async function insertContent(req, res) {
+async function insertContent(req, res) {
   const { id, title, text } = req.body;
   const sqlInsert = `
     INSERT INTO content (title, text) VALUES (?, ?)
@@ -18,7 +19,8 @@ export async function insertContent(req, res) {
     const rows = id
       ? await run(sqlUpdate, [title, text, id])
       : await run(sqlInsert, [title, text]);
-      
+
+    res.status(200).send({ message: "Sisältö tallennettu.", id: rows[0]?.id });
   } catch (error) {
     console.error("Virhe sisällön lisäyksessä/päivityksessä:", error);
     res
@@ -30,13 +32,13 @@ export async function insertContent(req, res) {
 /* -------------------------------------------------
    2️⃣ Tournament (open) – create / update
 ---------------------------------------------------*/
-export async function insertTournament(req, res, next) {
+async function insertTournament(req, res, next) {
   const { id, name, year = new Date().getFullYear(), active, ended } = req.body;
   const data = {
     name,
     year,
-    active: active === "on" ? 1 : 0,
-    ended: ended === "on" ? 1 : 0,
+    active: active === "on" || active === true || active === 1 ? 1 : 0,
+    ended: ended === "on" || ended === true || ended === 1 ? 1 : 0,
   };
 
   const sqlInsert = `
@@ -59,23 +61,29 @@ export async function insertTournament(req, res, next) {
         ])
       : await run(sqlInsert, [data.name, data.year, data.active, data.ended]);
 
-    // optional: call next() if you treat this as middleware
+    if (res && res.status) {
+      res
+        .status(200)
+        .send({ message: "Turnaus tallennettu.", id: rows[0]?.id });
+    }
     if (next) next();
-
-    res.status(200).send({ message: "Turnaus tallennettu.", id: rows[0]?.id });
   } catch (error) {
     console.error("Virhe turnauksen lisäyksessä/päivityksessä:", error);
-    res.status(500).send({ error: "Turnauksen tallennus epäonnistui." });
+    if (res && res.status) {
+      res.status(500).send({ error: "Turnauksen tallennus epäonnistui." });
+    } else if (next) {
+      next(error);
+    }
   }
 }
 
 /* -------------------------------------------------
    3️⃣ Player – create / update
 ---------------------------------------------------*/
-export async function insertPlayer(req, res, next) {
+async function insertPlayer(req, res, next) {
   const { id, name, group, points } = req.body;
   const sqlInsert = `
-    INSERT INTO player (name, "group", points) VALUES (?, ?, ?)
+    INSERT INTO player (name, "group",) VALUES (?, ?, ?)
     RETURNING id;
   `;
   const sqlUpdate = `
@@ -88,18 +96,28 @@ export async function insertPlayer(req, res, next) {
       ? await run(sqlUpdate, [name, group, points, id])
       : await run(sqlInsert, [name, group, points]);
 
+    if (res && res.status) {
+      res
+        .status(200)
+        .send({ message: "Pelaaja tallennettu.", id: rows[0]?.id });
+    }
     if (next) next();
-    res.status(200).send({ message: "Pelaaja tallennettu.", id: rows[0]?.id });
   } catch (error) {
     console.error("Virhe pelaajan lisäyksessä/päivityksessä:", error);
-    res.status(500).send({ error: "Pelaajan tallennus epäonnistui." });
+    if (res && res.status) {
+      res.status(500).send({ error: "Pelaajan tallennus epäonnistui." });
+    } else if (next) {
+      next(error);
+    }
   }
 }
 
-/* -------------------------------------------------
-   4️⃣ Match – create / update (with factor logic)
----------------------------------------------------*/
-export async function insertMatch(req, res) {
+/**
+ * 4️⃣ Match – create / update (with factor logic)
+ */
+async function insertMatch(req, res) {
+  console.log("insertMatch called with body:", req.body);
+
   const {
     id,
     home,
@@ -114,67 +132,69 @@ export async function insertMatch(req, res) {
     openId,
   } = req.body;
 
-  // Helper to fetch a player row (used for group comparison)
-  const getPlayer = async (playerId) => {
-    const rows = await run(`SELECT * FROM player WHERE id = ?`, [playerId]);
-    return rows[0];
-  };
-
   try {
-    // Run everything in a transaction – we read two players and then write the match.
+    // 1. Ensure IDs are Numbers and fetch player data for factor calculation
+    const homeId = Number(home);
+    const awayId = Number(away);
+
+    const hp = await getPlayerById(homeId);
+    const ap = await getPlayerById(awayId);
+
+    if (!hp || !ap) {
+      return res.status(404).send({
+        error: `Pelaajia ei löytynyt. (Koti: ${home}, Vieras: ${away})`,
+      });
+    }
+
     const matchRow = await transaction(async (tx) => {
-      const homePlayer = await tx.execute(`SELECT * FROM player WHERE id = ?`, [
-        home,
-      ]);
-      const awayPlayer = await tx.execute(`SELECT * FROM player WHERE id = ?`, [
-        away,
-      ]);
-
-      if (!homePlayer.rows.length || !awayPlayer.rows.length) {
-        throw new Error("Pelaajia ei löytynyt ottelua varten.");
-      }
-
-      const hp = homePlayer.rows[0];
-      const ap = awayPlayer.rows[0];
-
-      // ----- factor calculation (unchanged) -----
+      // 2. Factor calculation logic
       let modifier = 1;
-      if (homeWins > awayWins) {
-        modifier =
-          hp.group <= ap.group ? 1 : hp.group - ap.group === 1 ? 1.5 : 2;
-      } else if (awayWins > homeWins) {
-        modifier =
-          ap.group <= hp.group ? 1 : ap.group - hp.group === 1 ? 1.5 : 2;
+      const hGroup = Number(hp.group || hp.Ryhma || 0);
+      const aGroup = Number(ap.group || ap.Ryhma || 0);
+      const hWins = Number(homeWins) || 0;
+      const aWins = Number(awayWins) || 0;
+
+      if (hWins > aWins) {
+        modifier = hGroup <= aGroup ? 1 : hGroup - aGroup === 1 ? 1.5 : 2;
+      } else if (aWins > hWins) {
+        modifier = aGroup <= hGroup ? 1 : aGroup - hGroup === 1 ? 1.5 : 2;
       }
 
+      // 3. Prepare data object with strict types
       const data = {
-        home,
-        away,
-        homeWins,
-        awayWins,
-        date,
-        result,
-        openId,
-        reported: reported === "on" ? 1 : 0,
-        withdraw: withdraw === "on" ? 1 : 0,
-        played: played === "on" ? 1 : 0,
+        player1: homeId,
+        player2: awayId,
+        wins1: hWins,
+        wins2: aWins,
+        game_date: date,
+        result: result || "",
+        tournament_id: openId ? Number(openId) : null,
+        reported:
+          reported === "on" || reported === true || reported === 1 ? 1 : 0,
+        withdraw:
+          withdraw === "on" || withdraw === true || withdraw === 1 ? 1 : 0,
+        played: played === "on" || played === true || played === 1 ? 1 : 0,
         factor: modifier,
       };
 
-      // Insert or update
+      console.log("Saving to DB:", data);
+
       if (id) {
+        // UPDATE existing match
         await tx.execute(
-          `UPDATE match
-           SET player1 = ?, player2 = ?, wins1 = ?, wins2 = ?, game_date = ?, result = ?, tournament_id = ?, reported = ?, withdraw = ?, played = ?, factor = ?
+          `UPDATE matches
+           SET player1 = ?, player2 = ?, wins1 = ?, wins2 = ?, game_date = ?,
+               result = ?, tournament_id = ?, reported = ?, withdraw = ?,
+               played = ?, factor = ?
            WHERE id = ?`,
           [
-            data.home,
-            data.away,
-            data.homeWins,
-            data.awayWins,
-            data.date,
+            data.player1,
+            data.player2,
+            data.wins1,
+            data.wins2,
+            data.game_date,
             data.result,
-            data.openId,
+            data.tournament_id,
             data.reported,
             data.withdraw,
             data.played,
@@ -184,35 +204,48 @@ export async function insertMatch(req, res) {
         );
         return { id };
       } else {
-        const result = await tx.execute(
-          `INSERT INTO match (player1, player2, wins1, wins2, game_date, result, tournament_id, reported, withdraw, played, factor)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-           RETURNING id`,
+        // INSERT new match
+        const dbResult = await tx.execute(
+          `INSERT INTO matches (
+            player1, player2, wins1, wins2, game_date,
+            result, tournament_id, reported, withdraw, played, factor
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          RETURNING id`,
           [
-            data.home,
-            data.away,
-            data.homeWins,
-            data.awayWins,
-            data.date,
+            data.player1,
+            data.player2,
+            data.wins1,
+            data.wins2,
+            data.game_date,
             data.result,
-            data.openId,
+            data.tournament_id,
             data.reported,
             data.withdraw,
             data.played,
             data.factor,
           ],
         );
-        return result.rows[0];
+
+        // Return the first row from the result (standard for RETURNING id)
+        return dbResult.rows
+          ? dbResult.rows[0]
+          : { id: dbResult.lastInsertRowid };
       }
     });
 
-    // Success response
     res.status(200).send({
       message: "Ottelu tallennettu.",
       id: matchRow.id,
     });
   } catch (error) {
-    console.error("Virhe ottelun lisäyksessä/päivityksessä:", error);
-    res.status(500).send({ error: "Ottelun tallennus epäonnistui." });
+    console.error("Virhe ottelun tallennuksessa:", error);
+    res.status(500).send({ error: error.message || "Tallennus epäonnistui." });
   }
 }
+
+module.exports = {
+  insertContent,
+  insertTournament,
+  insertPlayer,
+  insertMatch,
+};

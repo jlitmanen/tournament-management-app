@@ -14,8 +14,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node --env-file=.env ./bin/www",
-    "prod": "node ./bin/www",
-    "build-css": "sass public/scss/theme.scss public/css/theme.css"
+    "prod": "node ./bin/www"
   },
   "engines": {
     "node": "22.16.0"
@@ -33,12 +32,11 @@
     "http-errors": "~1.6.3",
     "lusca": "^1.7.0",
     "memorystore": "^1.6.7",
-    "morgan": "~1.9.1",
+    "morgan": "^1.10.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pluralize": "^8.0.0",
     "pocketbase": "^0.21.2",
-    "sanitize-html": "^2.17.0",
-    "sass": "^1.97.2"
+    "sanitize-html": "^2.17.0"
   }
 }
