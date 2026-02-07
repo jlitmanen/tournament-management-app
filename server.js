@@ -12,9 +12,11 @@ const db = createClient({
   authToken: process.env.TURSO_TOKEN,
 });
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "*"
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "*",
+  }),
+);
 app.use(express.json());
 
 // --- LOGIN ROUTE ---q
@@ -137,7 +139,7 @@ app.get("/api/results", async (req, res) => {
     // 2. Get total count for pagination (with filter)
     const countRs = await db.execute({
       sql: `SELECT COUNT(*) as total FROM matches m ${whereClause}`,
-      args: args
+      args: args,
     });
 
     // 3. Get matches (with filter)
@@ -193,7 +195,7 @@ app.put("/api/matches/:id", async (req, res) => {
       wins2,
       game_date,
       result,
-      tournament_id || null,""
+      tournament_id || null,
       req.params.id,
     ],
   });
